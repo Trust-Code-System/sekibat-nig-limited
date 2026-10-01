@@ -13,6 +13,8 @@
 # testing
 /coverage
 /.artifacts/
+/.cms/
+/public/media/uploads/
 
 # next.js
 /.next/

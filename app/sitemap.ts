@@ -1,8 +1,10 @@
 import type { MetadataRoute } from "next";
+import { connection } from "next/server";
 import { getProjectSlugs, getPropertySlugs, getServiceSlugs } from "@/lib/api";
 import { absoluteUrl } from "@/lib/seo";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  await connection();
   const [propertySlugs, projectSlugs, serviceSlugs] = await Promise.all([
     getPropertySlugs(),
     getProjectSlugs(),

@@ -1,5 +1,5 @@
 import { cache } from "react";
-import { properties } from "@/data/properties";
+import { publishedRecords } from "./cms-store";
 import type { Property } from "@/types";
 import { apiPath, CACHE_TAGS, remoteOrLocal, remoteOrLocalNullable } from "./client";
 import {
@@ -20,8 +20,8 @@ import {
  *   - every read is wrapped in React cache() so generateMetadata, the page and the JSON-LD
  *     builder share one call per request
  *
- * Setting SEKIBAT_API_URL switches these reads to the remote endpoint. Without it, local
- * placeholder records keep development and design review self-contained.
+ * Setting SEKIBAT_API_URL switches these reads to the remote endpoint. Otherwise, only
+ * published CMS records are returned, seeded with the original placeholder records.
  */
 
 const STATUS_RANK: Record<Property["status"], number> = {
@@ -81,7 +81,8 @@ function compare(a: Property, b: Property, sort: PropertySortKey): number {
   }
 }
 
-function localProperties(query: PropertyQuery): Paged<Property> {
+async function localProperties(query: PropertyQuery): Promise<Paged<Property>> {
+  const properties = await publishedRecords<Property>("properties");
   const perPage = query.perPage ?? DEFAULT_PER_PAGE;
   const filtered = properties
     .filter((p) => matches(p, query))
@@ -119,7 +120,7 @@ export const getPropertyBySlug = cache(async (slug: string): Promise<Property | 
   return remoteOrLocalNullable(
     `/properties/${encodeURIComponent(slug)}`,
     [CACHE_TAGS.properties, CACHE_TAGS.property(slug)],
-    () => properties.find((p) => p.slug === slug) ?? null
+    async () => (await publishedRecords<Property>("properties")).find((p) => p.slug === slug) ?? null
   );
 });
 
@@ -141,7 +142,7 @@ export const getRelatedProperties = cache(
         const current = await getPropertyBySlug(slug);
         if (!current) return [];
 
-        const pool = properties.filter((p) => p.slug !== slug);
+        const pool = (await publishedRecords<Property>("properties")).filter((p) => p.slug !== slug);
         const score = (p: Property) =>
           (p.location.city === current.location.city ? 2 : 0) + (p.type === current.type ? 1 : 0);
 
@@ -154,13 +155,14 @@ export const getRelatedProperties = cache(
 );
 
 export const getPropertySlugs = cache(async (): Promise<string[]> => {
-  return remoteOrLocal("/properties/slugs", [CACHE_TAGS.properties], () =>
-    properties.map((p) => p.slug)
+  return remoteOrLocal("/properties/slugs", [CACHE_TAGS.properties], async () =>
+    (await publishedRecords<Property>("properties")).map((p) => p.slug)
   );
 });
 
 export const getPropertyFacets = cache(async (): Promise<PropertyFacets> => {
-  return remoteOrLocal("/properties/facets", [CACHE_TAGS.properties], () => {
+  return remoteOrLocal("/properties/facets", [CACHE_TAGS.properties], async () => {
+    const properties = await publishedRecords<Property>("properties");
     const uniq = <T,>(xs: T[]) => [...new Set(xs)];
     return {
       cities: uniq(properties.map((p) => p.location.city)).sort((a, b) => a.localeCompare(b)),

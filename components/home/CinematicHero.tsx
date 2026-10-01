@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { ArrowIcon } from "@/components/home/icons";
 import { SmartImage } from "@/components/media/SmartImage";
-import { EDITORIAL, SIZES } from "@/lib/images";
+import { SIZES } from "@/lib/images";
+import type { HomeContent } from "@/lib/cms/schema";
 import type { Property } from "@/types";
 
 /**
@@ -17,7 +18,7 @@ import type { Property } from "@/types";
  * and it reverses naturally when the user scrolls back up. Without JS, `--p` stays 0 and
  * the scene degrades to a static hero followed by the properties section.
  */
-export function CinematicHero({ featured }: { featured?: Property }) {
+export function CinematicHero({ featured, content }: { featured?: Property; content: HomeContent }) {
   const trackRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -64,7 +65,7 @@ export function CinematicHero({ featured }: { featured?: Property }) {
         <div className="cine-media absolute inset-0">
           <div className="cine-media-zoom absolute inset-0">
             <SmartImage
-              src={EDITORIAL.cineHero}
+              src={content.heroImage}
               alt="A Sekibat residential house at dusk, interior lights glowing"
               sizes={SIZES.full}
               priority
@@ -79,14 +80,13 @@ export function CinematicHero({ featured }: { featured?: Property }) {
 
         <div className="cine-hero-copy pointer-events-none absolute inset-0 flex flex-col justify-end">
           <div className="mx-auto w-full max-w-(--container-site) px-6 pb-28 md:px-12 md:pb-24">
-            <p className="cine-eyebrow text-ivory/80">Innovative living</p>
+            <p className="cine-eyebrow text-ivory/80">{content.eyebrow}</p>
             <h1 className="mt-6 max-w-[16ch] font-sans text-[clamp(2.75rem,1.2rem+6.4vw,6.25rem)] leading-[0.94] font-medium tracking-[-0.045em] text-ivory">
-              Elevate your space with{" "}
-              <span className="accent-serif tracking-[-0.02em]">smart design.</span>
+              {content.heading}{" "}
+              <span className="accent-serif tracking-[-0.02em]">{content.headingAccent}</span>
             </h1>
             <p className="mt-7 max-w-[36ch] text-[0.9375rem] leading-relaxed text-ivory/70">
-              Discover modern living spaces reimagined through architecture we build,
-              own and look after across Lagos and Abuja.
+              {content.introduction}
             </p>
           </div>
 

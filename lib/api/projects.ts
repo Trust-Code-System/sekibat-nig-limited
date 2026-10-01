@@ -1,5 +1,5 @@
 import { cache } from "react";
-import { projects } from "@/data/projects";
+import { publishedRecords } from "./cms-store";
 import type { Project } from "@/types";
 import { apiPath, CACHE_TAGS, remoteOrLocal, remoteOrLocalNullable } from "./client";
 import { DEFAULT_PER_PAGE, type Paged, type ProjectQuery, type ProjectSortKey } from "./types";
@@ -47,7 +47,8 @@ function compare(a: Project, b: Project, sort: ProjectSortKey): number {
   }
 }
 
-function localProjects(query: ProjectQuery): Paged<Project> {
+async function localProjects(query: ProjectQuery): Promise<Paged<Project>> {
+  const projects = await publishedRecords<Project>("projects");
   const perPage = query.perPage ?? DEFAULT_PER_PAGE;
   const filtered = projects
     .filter((p) => matches(p, query))
@@ -73,7 +74,7 @@ export const getProjectBySlug = cache(async (slug: string): Promise<Project | nu
   return remoteOrLocalNullable(
     `/projects/${encodeURIComponent(slug)}`,
     [CACHE_TAGS.projects, CACHE_TAGS.project(slug)],
-    () => projects.find((p) => p.slug === slug) ?? null
+    async () => (await publishedRecords<Project>("projects")).find((p) => p.slug === slug) ?? null
   );
 });
 
@@ -94,7 +95,7 @@ export const getRelatedProjects = cache(
         const shared = (p: Project) =>
           p.services.filter((s) => current.services.includes(s)).length;
 
-        return projects
+        return (await publishedRecords<Project>("projects"))
           .filter((p) => p.slug !== slug)
           .sort((a, b) => shared(b) - shared(a) || compare(a, b, "featured"))
           .slice(0, limit);
@@ -112,7 +113,7 @@ export const getProjectsByService = cache(
 );
 
 export const getProjectSlugs = cache(async (): Promise<string[]> => {
-  return remoteOrLocal("/projects/slugs", [CACHE_TAGS.projects], () =>
-    projects.map((p) => p.slug)
+  return remoteOrLocal("/projects/slugs", [CACHE_TAGS.projects], async () =>
+    (await publishedRecords<Project>("projects")).map((p) => p.slug)
   );
 });

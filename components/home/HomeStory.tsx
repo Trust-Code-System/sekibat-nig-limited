@@ -11,7 +11,7 @@ const PILLARS = [
   { label: "How far we stay", value: "Develop, sell, manage" },
 ] as const;
 
-export function HomeStory({ company }: { company: Company }) {
+export function HomeStory({ company, image = EDITORIAL.cineStory }: { company: Company; image?: string }) {
   return (
     <section
       className="on-night bg-onyx text-ivory"
@@ -41,7 +41,7 @@ export function HomeStory({ company }: { company: Company }) {
         <Reveal delay={80} className="md:col-span-6 md:col-start-7">
           <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-onyx-soft md:aspect-[5/6]">
             <SmartImage
-              src={EDITORIAL.cineStory}
+              src={image}
               alt="A Sekibat residential tower, planted balconies against a clear sky"
               sizes={SIZES.half}
             />

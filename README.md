@@ -3,9 +3,9 @@
 Production-style public frontend for Sekibat Nig Limited, a Nigerian property company that
 develops and owns property and provides property services to external clients.
 
-The site uses placeholder records and photography today, but all page components read through
-an asynchronous repository layer so the UI can move to a CMS or Sekibat Admin API without a
-route or component rewrite.
+The site includes a protected CMS at `/admin` for editing and publishing website content.
+Its initial records and photography are placeholders. Public pages read published content
+through an asynchronous repository layer, which also supports the Sekibat Admin API adapter.
 
 ## Stack
 
@@ -53,6 +53,8 @@ pnpm shot -- / screenshots/home.png 1440 900
 
 ## Routes
 
+- `/admin` (or `/cms`) — Protected website content management; see [CMS setup and hosting](docs/CMS.md).
+
 - `/` — Homepage
 - `/properties` and `/properties/[slug]` — Filterable catalogue and property records
 - `/projects` and `/projects/[slug]` — Project case studies
@@ -63,7 +65,9 @@ pnpm shot -- / screenshots/home.png 1440 900
 
 ## Architecture
 
-- `data/` contains placeholder records only.
+- `data/` contains the initial placeholder records used to seed the CMS.
+- `lib/api/cms-store.ts` persists drafts and published records; `lib/cms/` validates edits and protects access.
+- `components/admin/` contains the responsive content workspace and editors.
 - `lib/api/` is the data seam used by pages and components. UI code must not import `data/`
   directly.
 - `types/` contains the stable record contracts expected from a future API.
@@ -107,8 +111,9 @@ Client-supplied information still required before launch:
 - real photography and pricing
 - approved company history and final marketing copy
 
-Replace company/contact content in `data/company.ts` and property, project and service records
-in their respective files under `data/` while working locally. In an integrated environment,
+Use `/admin` to edit and publish homepage, company/contact, property, project and service
+content. Bundled records in `data/` seed the CMS before its first save. Once content has been
+saved, the persistent CMS store owns those records. In an integrated environment,
 set `SEKIBAT_API_URL` and serve the contract in `docs/BACKEND_API_CONTRACT.md` instead.
 
 Placeholder photography is stored locally in `public/media/`. Its reproducible source manifest

@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { ArrowIcon } from "@/components/home/icons";
 import { SmartImage } from "@/components/media/SmartImage";
-import { EDITORIAL, SIZES } from "@/lib/images";
+import { SIZES } from "@/lib/images";
+import type { HomeContent } from "@/lib/cms/schema";
 
-export function HomeCta() {
+export function HomeCta({ content }: { content: HomeContent }) {
   return (
     <section
       className="relative isolate min-h-[88svh] overflow-hidden bg-onyx text-ivory"
@@ -12,7 +13,7 @@ export function HomeCta() {
     >
       <div className="absolute inset-0">
         <SmartImage
-          src={EDITORIAL.cineCta}
+          src={content.ctaImage}
           alt="Dusk light on a residential balcony stack"
           sizes={SIZES.full}
         />
@@ -28,18 +29,17 @@ export function HomeCta() {
           id="home-cta-heading"
           className="mt-7 max-w-[16ch] font-sans text-[clamp(2.5rem,1.1rem+5vw,5.5rem)] leading-[0.94] font-medium tracking-[-0.045em]"
         >
-          Explore the future of <span className="accent-serif">real estate</span>
+          {content.ctaHeading} <span className="accent-serif">{content.ctaAccent}</span>
         </h2>
         <p className="mt-6 max-w-[40ch] text-base text-ivory/70">
-          Tell us about the property, the site, or the building you already hold. We will start
-          from there.
+          {content.ctaBody}
         </p>
         <Link href="/contact" className="group mt-12 inline-flex items-center gap-4">
           <span className="cine-arrow-btn">
             <ArrowIcon />
           </span>
           <span className="text-left">
-            <span className="block text-sm font-medium text-ivory">Get started</span>
+            <span className="block text-sm font-medium text-ivory">{content.ctaLabel}</span>
             <span className="mt-0.5 block text-xs text-ivory/60">Start an enquiry</span>
           </span>
         </Link>
