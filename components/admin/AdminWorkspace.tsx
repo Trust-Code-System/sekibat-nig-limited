@@ -19,6 +19,7 @@ import { MediaGrid } from "./MediaLibrary";
 import { photo, status, template, title } from "./content-utils";
 import { StudioMenu, StudioSelect, StudioTooltip } from "./StudioControls";
 import { ProfilePanel } from "./ProfilePanel";
+import { StudioGreeting } from "./StudioGreeting";
 import { initials, useStudioPreference } from "./studio-preferences";
 
 function Navigation({
@@ -412,30 +413,27 @@ export function AdminWorkspace({
             ) : (
               <>
                 <Reveal className="cms-page-heading">
-                  <div>
-                    <p className="cms-eyebrow">
-                      {view === "overview"
-                        ? "YOUR WEBSITE, FROM A NEW PERSPECTIVE"
-                        : view === "media"
+                  {view === "overview" ? (
+                    <StudioGreeting name={name} />
+                  ) : (
+                    <div>
+                      <p className="cms-eyebrow">
+                        {view === "media"
                           ? "A WELL-CURATED FIRST IMPRESSION"
                           : "THE DETAILS MAKE THE DIFFERENCE"}
-                    </p>
-                    <h1>
-                      {collection?.label ||
-                        (view === "media"
-                          ? "The image library."
-                          : "Your website. In good hands.")}
-                      <span className="cms-heading-dot">
-                        {collection ? "." : ""}
-                      </span>
-                    </h1>
-                    <p>
-                      {collection?.description ||
-                        (view === "media"
-                          ? "A place for every photograph. A photograph for every story."
-                          : "A little care, a fresh perspective. Make your next update count.")}
-                    </p>
-                  </div>
+                      </p>
+                      <h1>
+                        {collection?.label || "The image library."}
+                        <span className="cms-heading-dot">
+                          {collection ? "." : ""}
+                        </span>
+                      </h1>
+                      <p>
+                        {collection?.description ||
+                          "A place for every photograph. A photograph for every story."}
+                      </p>
+                    </div>
+                  )}
                   {addButton}
                 </Reveal>
                 {view === "overview" && (

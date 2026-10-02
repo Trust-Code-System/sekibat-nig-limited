@@ -28,6 +28,7 @@ const backup = await readFile(storage).catch((error) => {
 const browser = await chromium.launch();
 const context = await browser.newContext({
   viewport: { width: 1440, height: 1000 },
+  timezoneId: "Africa/Lagos",
 });
 const page = await context.newPage();
 const errors = [];
@@ -39,13 +40,20 @@ async function signIn(target) {
   await target.getByLabel("Administrator password").fill(password);
   await target.getByRole("button", { name: "Sign in" }).click();
   await target
-    .getByRole("heading", { name: "Your website. In good hands." })
+    .getByRole("heading", {
+      name: /^(Good morning|Good afternoon|Good evening|Welcome back)/,
+    })
     .waitFor();
   await target.locator('.cms-workspace[data-ready="true"]').waitFor();
 }
 async function openHome(target) {
   await target.getByRole("button", { name: "Edit homepage" }).click();
   await target.getByLabel("Heading", { exact: true }).waitFor();
+}
+async function clickOutside(target) {
+  const box = await target.locator(".cms-topbar").boundingBox();
+  assert(box, "The studio header remains visible above open controls.");
+  await target.mouse.click(box.x + 150, box.y + 25);
 }
 try {
   await page.goto(`${base}/admin`);
@@ -81,12 +89,43 @@ try {
     "Correct password cannot bypass email validation.",
   );
   await signIn(page);
+  const clockPage = await context.newPage();
+  clockPage.on("pageerror", (error) => errors.push(error.message));
+  await clockPage.clock.install({
+    time: new Date("2026-10-02T11:59:00+01:00"),
+  });
+  await clockPage.goto(`${base}/admin`);
+  await clockPage.getByRole("heading", { name: "Good morning." }).waitFor();
+  await clockPage.clock.fastForward("02:00");
+  await clockPage.getByRole("heading", { name: "Good afternoon." }).waitFor();
+  await clockPage.clock.fastForward("05:00:00");
+  await clockPage.getByRole("heading", { name: "Good evening." }).waitFor();
+  await clockPage.clock.fastForward("07:00:00");
+  await clockPage.getByRole("heading", { name: "Welcome back." }).waitFor();
+  assert.match(
+    await clockPage.locator(".cms-greeting .cms-eyebrow").innerText(),
+    /SATURDAY,? 3 OCTOBER/,
+  );
+  await clockPage.clock.fastForward("05:00:00");
+  await clockPage.getByRole("heading", { name: "Good morning." }).waitFor();
+  await clockPage.close();
   assert.equal(
     await page.locator('a[href="/"]:visible').count(),
     1,
     "Only one global website link remains.",
   );
   assert.equal(await page.locator(".cms-site-switch").count(), 0);
+  await page.getByRole("combobox", { name: "Sort content" }).click();
+  await page.getByRole("listbox").waitFor();
+  await clickOutside(page);
+  await page.getByRole("listbox").waitFor({ state: "hidden" });
+  assert.equal(
+    await page
+      .getByRole("combobox", { name: "Sort content" })
+      .getAttribute("aria-expanded"),
+    "false",
+    "Outside presses close dropdowns.",
+  );
   await page.getByRole("combobox", { name: "Sort content" }).click();
   await page.getByRole("option", { name: "Title A–Z" }).click();
   assert.match(
@@ -101,6 +140,10 @@ try {
     0,
     "Escape closes dropdowns.",
   );
+  await page.getByRole("button", { name: "Create content" }).click();
+  await page.getByRole("menu").waitFor();
+  await clickOutside(page);
+  await page.getByRole("menu").waitFor({ state: "hidden" });
   await page.getByRole("button", { name: "Create content" }).click();
   await page.getByRole("menuitem", { name: "New project" }).click();
   await page.getByLabel("Title", { exact: true }).waitFor();
@@ -123,6 +166,7 @@ try {
     .getByRole("button", { name: "Expand sidebar", exact: true })
     .waitFor();
   await page.reload();
+  await page.getByRole("heading", { name: /, Studio\.$/ }).waitFor();
   await page
     .getByRole("button", { name: "Expand sidebar", exact: true })
     .waitFor();
@@ -171,6 +215,10 @@ try {
   await page.getByRole("option", { name: "Leased", exact: true }).click();
   await page.getByRole("combobox", { name: "Ownership", exact: true }).click();
   await page.getByRole("option", { name: "Client", exact: true }).click();
+  await page.getByLabel("Date listed", { exact: true }).click();
+  await page.locator(".cms-calendar-popover").waitFor();
+  await clickOutside(page);
+  await page.locator(".cms-calendar-popover").waitFor({ state: "hidden" });
   await page.getByLabel("Date listed", { exact: true }).click();
   await page
     .getByRole("button", { name: "Go to the Next Month", exact: true })

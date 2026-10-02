@@ -1,5 +1,5 @@
 "use client";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import * as Select from "@radix-ui/react-select";
 import * as Popover from "@radix-ui/react-popover";
 import * as Menu from "@radix-ui/react-dropdown-menu";
@@ -12,6 +12,33 @@ function studioContainer() {
   return typeof document === "undefined"
     ? undefined
     : document.querySelector<HTMLElement>(".cms") || undefined;
+}
+
+// Capture outside presses even when another surface stops event bubbling.
+// Keep Radix's own Escape, selection, and focus management in place.
+function useStudioDismissal() {
+  const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = () => setOpen(false);
+    const outsidePress = (event: PointerEvent) => {
+      const path = event.composedPath();
+      if (
+        !path.includes(triggerRef.current as EventTarget) &&
+        !path.includes(contentRef.current as EventTarget)
+      )
+        close();
+    };
+    document.addEventListener("pointerdown", outsidePress, true);
+    window.addEventListener("blur", close);
+    return () => {
+      document.removeEventListener("pointerdown", outsidePress, true);
+      window.removeEventListener("blur", close);
+    };
+  }, [open]);
+  return { open, setOpen, triggerRef, contentRef };
 }
 
 export function StudioSelect({
@@ -31,13 +58,17 @@ export function StudioSelect({
   disabled?: boolean;
   className?: string;
 }) {
+  const { open, setOpen, triggerRef, contentRef } = useStudioDismissal();
   return (
     <Select.Root
+      open={open}
+      onOpenChange={setOpen}
       value={value}
       onValueChange={onValueChange}
       disabled={disabled}
     >
       <Select.Trigger
+        ref={triggerRef}
         id={id}
         aria-label={label}
         className={`cms-select-trigger ${className}`}
@@ -49,6 +80,8 @@ export function StudioSelect({
       </Select.Trigger>
       <Select.Portal container={studioContainer()}>
         <Select.Content
+          ref={contentRef}
+          onPointerDownOutside={() => setOpen(false)}
           className="cms-select-content"
           position="popper"
           sideOffset={6}
@@ -94,11 +127,16 @@ export function StudioMenu({
     onSelect: () => void;
   }[];
 }) {
+  const { open, setOpen, triggerRef, contentRef } = useStudioDismissal();
   return (
-    <Menu.Root>
-      <Menu.Trigger asChild>{trigger}</Menu.Trigger>
+    <Menu.Root open={open} onOpenChange={setOpen}>
+      <Menu.Trigger ref={triggerRef} asChild>
+        {trigger}
+      </Menu.Trigger>
       <Menu.Portal container={studioContainer()}>
         <Menu.Content
+          ref={contentRef}
+          onInteractOutside={() => setOpen(false)}
           className="cms-menu-content"
           sideOffset={8}
           align="end"
@@ -184,7 +222,7 @@ export function StudioDatePicker({
   optional?: boolean;
   disabled?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const { open, setOpen, triggerRef, contentRef } = useStudioDismissal();
   const selected = parseDate(value);
   function choose(date: Date | undefined) {
     if (!date && !optional) return;
@@ -195,6 +233,7 @@ export function StudioDatePicker({
     <Popover.Root open={open} onOpenChange={setOpen}>
       <Popover.Trigger asChild>
         <button
+          ref={triggerRef}
           id={id}
           type="button"
           disabled={disabled}
@@ -216,6 +255,8 @@ export function StudioDatePicker({
       <input type="hidden" name={id} value={value} />
       <Popover.Portal container={studioContainer()}>
         <Popover.Content
+          ref={contentRef}
+          onInteractOutside={() => setOpen(false)}
           className="cms-calendar-popover"
           align="start"
           sideOffset={7}
