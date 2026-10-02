@@ -142,6 +142,55 @@ async function checkContentToolbarFit(target) {
   }
   await target.setViewportSize({ width: 1440, height: 1000 });
 }
+async function checkFixedSidebar(target) {
+  for (const collapsed of [false, true]) {
+    if (collapsed) {
+      await target
+        .getByRole("button", { name: "Collapse sidebar", exact: true })
+        .click();
+    }
+    for (const height of [900, 680, 600, 480]) {
+      await target.setViewportSize({ width: 1024, height });
+      const rail = target.locator(".cms-sidebar");
+      await rail
+        .getByRole("button", { name: "Your profile", exact: true })
+        .focus();
+      const before = await rail.evaluate((el) => ({
+        top: el.getBoundingClientRect().top,
+        scroll: el.scrollTop,
+        height: el.clientHeight,
+        content: el.scrollHeight,
+      }));
+      assert(
+        before.content <= before.height + 1,
+        `All sidebar controls must fit at ${height}px (${collapsed ? "compact" : "expanded"}): ${JSON.stringify(before)}.`,
+      );
+      const bounds = await rail.boundingBox();
+      await target.mouse.move(bounds.x + bounds.width / 2, bounds.y + 150);
+      await target.mouse.wheel(0, 600);
+      await target.locator(".cms-main").evaluate((el) => el.scrollIntoView());
+      const after = await rail.evaluate((el) => ({
+        top: el.getBoundingClientRect().top,
+        scroll: el.scrollTop,
+      }));
+      assert.equal(
+        after.top,
+        before.top,
+        "The sidebar must stay anchored while the page scrolls.",
+      );
+      assert.equal(
+        after.scroll,
+        0,
+        "Wheel or keyboard focus must not scroll the sidebar contents.",
+      );
+    }
+    await target.setViewportSize({ width: 1440, height: 1000 });
+  }
+  await target
+    .getByRole("button", { name: "Expand sidebar", exact: true })
+    .click();
+  await target.evaluate(() => window.scrollTo(0, 0));
+}
 try {
   await page.goto(`${base}/admin`);
   assert(
@@ -195,6 +244,7 @@ try {
     "Correct password cannot bypass email validation.",
   );
   await signIn(page);
+  await checkFixedSidebar(page);
   await checkContentToolbarFit(page);
   const clockPage = await context.newPage();
   clockPage.on("pageerror", (error) => errors.push(error.message));
