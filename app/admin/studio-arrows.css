@@ -1,0 +1,164 @@
+/* Direction is an affordance: a sculpted arrow, a quiet tile, and a short nudge. */
+.cms-arrow {
+  --arrow-tile: #f8eee8;
+  --arrow-edge: #eedbd0;
+  --arrow-ink: #875036;
+  display: inline-block;
+  height: auto;
+  aspect-ratio: 1;
+  vertical-align: middle;
+  overflow: hidden;
+}
+.cms-arrow-tile {
+  fill: var(--arrow-tile);
+  stroke: var(--arrow-edge);
+  stroke-width: 1;
+  transition:
+    fill 180ms ease,
+    stroke 180ms ease;
+}
+.cms-arrow-shape {
+  fill: var(--arrow-ink);
+  transition: fill 180ms ease;
+}
+.cms-arrow-motion {
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cms-arrow-next {
+  --arrow-x: 1.5px;
+  --arrow-y: 0px;
+}
+.cms-arrow-back {
+  --arrow-x: -1.5px;
+  --arrow-y: 0px;
+}
+.cms-arrow-external {
+  --arrow-x: 1px;
+  --arrow-y: -1px;
+}
+.cms
+  :is(button, a, [role="row"]):is(:hover, :focus-visible):not(:disabled)
+  .cms-arrow {
+  --arrow-tile: #f6d9c9;
+  --arrow-edge: #edbea5;
+  --arrow-ink: #6b351e;
+}
+.cms
+  :is(button, a, [role="row"]):is(:hover, :focus-visible):not(:disabled)
+  .cms-arrow-motion {
+  transform: translate(var(--arrow-x), var(--arrow-y));
+}
+.cms .cms-primary .cms-arrow {
+  --arrow-tile: #39281f;
+  --arrow-edge: #39281f;
+  --arrow-ink: #fff2e9;
+}
+.cms .cms-primary:is(:hover, :focus-visible):not(:disabled) .cms-arrow {
+  --arrow-tile: #513326;
+  --arrow-edge: #513326;
+  --arrow-ink: #fff7f0;
+}
+.cms-primary:has(> .cms-arrow) {
+  padding-block: 6px;
+  padding-right: 6px;
+  gap: 13px;
+}
+.cms-signin-fields .cms-primary > .cms-arrow {
+  width: 34px;
+  height: 34px;
+}
+.cms-signin-fields .cms-primary:has(> .cms-arrow) {
+  padding-right: 7px;
+}
+.cms-signin-back,
+.cms-back {
+  gap: 10px;
+  color: #625e5b;
+}
+.cms-sidebar-visit .cms-arrow {
+  --arrow-tile: #39332f;
+  --arrow-edge: #554039;
+  --arrow-ink: #f4b396;
+}
+.cms-sidebar-visit:is(:hover, :focus-visible) .cms-arrow {
+  --arrow-tile: #684636;
+  --arrow-edge: #8b5a43;
+  --arrow-ink: #ffe4d2;
+}
+.cms-row-arrow {
+  display: inline-flex;
+}
+.cms-table-row:hover .cms-row-arrow {
+  transform: none;
+}
+.cms-recent .cms-arrow {
+  width: 22px;
+  height: 22px;
+}
+.cms-table-row .cms-arrow {
+  width: 24px;
+  height: 24px;
+}
+.cms-shortcut > .cms-arrow {
+  width: 28px;
+  height: 28px;
+}
+.cms-preview-cta .cms-arrow {
+  width: 22px;
+  height: 22px;
+}
+.cms-image-field button > .cms-arrow:last-child {
+  width: 26px;
+  height: 26px;
+}
+.cms-direction-down {
+  padding: 2px;
+  box-sizing: content-box;
+  border-radius: 5px;
+  background: #f6eee9;
+  color: #96664f;
+  transition:
+    transform 180ms ease,
+    background 180ms ease;
+}
+.cms [data-state="open"] > .cms-direction-down,
+.cms [data-state="open"] > span > .cms-direction-down {
+  transform: rotate(180deg);
+  background: #f7d8c9;
+}
+.cms-primary .cms-direction-down {
+  background: #39281f17;
+  color: #5c3624;
+}
+.cms-select-scroll .cms-direction-down {
+  background: transparent;
+}
+.cms-calendar :is(.rdp-button_previous, .rdp-button_next) {
+  background: #f8eee8;
+  border-color: #eedbd0;
+  color: #875036;
+  border-radius: 8px;
+}
+@media (max-width: 760px) {
+  .cms-row-arrow > .cms-arrow {
+    width: 24px;
+    height: 24px;
+  }
+  .cms-image-field button > .cms-arrow:last-child {
+    width: 22px;
+    height: 22px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cms-arrow-tile,
+  .cms-arrow-shape,
+  .cms-arrow-motion,
+  .cms-direction-down {
+    transition: none;
+  }
+  .cms
+    :is(button, a, [role="row"]):is(:hover, :focus-visible)
+    .cms-arrow-motion {
+    transform: none;
+  }
+}

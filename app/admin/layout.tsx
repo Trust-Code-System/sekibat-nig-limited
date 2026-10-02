@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Manrope, Geist_Mono } from "next/font/google";
 import "./admin.css";
 import "./studio-controls.css";
+import "./studio-arrows.css";
 const studioSans = Manrope({
   variable: "--font-studio",
   subsets: ["latin"],
