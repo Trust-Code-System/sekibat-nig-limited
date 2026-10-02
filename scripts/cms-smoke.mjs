@@ -99,6 +99,49 @@ async function checkLoginFit(target, sizes) {
   }
   await target.setViewportSize({ width: 1440, height: 1000 });
 }
+async function checkContentToolbarFit(target) {
+  for (const width of [
+    320, 360, 390, 760, 761, 820, 900, 1024, 1200, 1280, 1440,
+  ]) {
+    await target.setViewportSize({ width, height: 900 });
+    const fit = await target
+      .locator(".cms-list-toolbar")
+      .evaluate((toolbar) => {
+        const bounds = toolbar.getBoundingClientRect();
+        const search = toolbar.querySelector(".cms-search");
+        const input = search.querySelector("input");
+        const controls = [...toolbar.querySelectorAll("button, .cms-search")];
+        return {
+          searchWidth: search.getBoundingClientRect().width,
+          inputWidth: input.getBoundingClientRect().width,
+          clipped: controls
+            .filter((control) => {
+              const rect = control.getBoundingClientRect();
+              return (
+                rect.left < bounds.left - 1 ||
+                rect.right > bounds.right + 1 ||
+                rect.top < bounds.top - 1 ||
+                rect.bottom > bounds.bottom + 1
+              );
+            })
+            .map(
+              (control) =>
+                control.getAttribute("aria-label") || control.textContent,
+            ),
+        };
+      });
+    assert(
+      fit.searchWidth >= 150 && fit.inputWidth >= 90,
+      `Search must remain usable at ${width}px: ${JSON.stringify(fit)}`,
+    );
+    assert.deepEqual(
+      fit.clipped,
+      [],
+      `Toolbar controls must stay inside their panel at ${width}px.`,
+    );
+  }
+  await target.setViewportSize({ width: 1440, height: 1000 });
+}
 try {
   await page.goto(`${base}/admin`);
   assert(
@@ -152,6 +195,7 @@ try {
     "Correct password cannot bypass email validation.",
   );
   await signIn(page);
+  await checkContentToolbarFit(page);
   const clockPage = await context.newPage();
   clockPage.on("pageerror", (error) => errors.push(error.message));
   await clockPage.clock.install({

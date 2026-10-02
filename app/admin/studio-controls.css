@@ -1,4 +1,51 @@
 /* Shared controls: the studio palette continues into every open surface. */
+/* Wrap control groups at their content width, including inside the compact rail. */
+.cms-list-toolbar,
+.cms-media-toolbar,
+.cms-editor-savebar,
+.cms-editor-savebar > div {
+  flex-wrap: wrap;
+}
+.cms-list-searches {
+  flex: 1 1 352px;
+  min-width: min(100%, 352px);
+  flex-wrap: wrap;
+}
+.cms-list-searches .cms-search {
+  flex: 1 1 160px;
+  min-width: min(100%, 160px);
+  width: auto;
+}
+.cms-list-searches .cms-sort-trigger {
+  flex: 0 1 165px;
+  min-width: min(100%, 165px);
+}
+.cms-filters {
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+.cms-list-heading {
+  gap: 16px;
+}
+.cms-list-heading > div:first-child {
+  min-width: 0;
+}
+.cms-view-switch {
+  flex-shrink: 0;
+}
+.cms-media-toolbar .cms-search {
+  flex: 1 1 220px;
+  min-width: min(100%, 180px);
+}
+.cms-media-folders,
+.cms-editor-section-nav {
+  flex-wrap: wrap;
+  overflow: visible;
+}
+.cms-search,
+.cms-date-trigger > span {
+  min-width: 0;
+}
 .cms-select-trigger,
 .cms-date-trigger {
   display: flex;
@@ -29,6 +76,13 @@
 .cms-date-trigger > svg:last-child {
   color: #8b96a4;
   margin-left: auto;
+}
+.cms-select-trigger > span:first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.cms-date-trigger > span {
+  flex: 1;
 }
 .cms-sort-trigger {
   width: auto;
@@ -905,6 +959,17 @@ body:has(.cms)::-webkit-scrollbar-thumb:hover,
   .cms-sort-trigger {
     min-width: 140px;
     font-size: 10px !important;
+  }
+  .cms-list-searches {
+    flex-basis: 100%;
+    min-width: 0;
+  }
+  .cms-list-searches .cms-sort-trigger {
+    flex: 1 1 140px;
+    min-width: min(100%, 140px);
+  }
+  .cms-media-toolbar .cms-search {
+    flex-basis: 100%;
   }
   .cms-profile-layout {
     grid-template-columns: 1fr;
