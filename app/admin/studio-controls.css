@@ -908,9 +908,17 @@ body:has(.cms)::-webkit-scrollbar-thumb:hover,
   border-radius: 15px;
   background: #4d656d;
 }
-.cms-signin-visual > img {
+.cms-signin-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 700ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+.cms-signin-slide.is-active {
+  opacity: 1;
+}
+.cms-signin-slide > img {
   object-fit: cover;
-  object-position: 48% 50%;
 }
 .cms-signin-visual::after {
   content: "";
@@ -946,7 +954,7 @@ body:has(.cms)::-webkit-scrollbar-thumb:hover,
   z-index: 1;
   left: 40px;
   right: 30px;
-  bottom: 85px;
+  bottom: 115px;
 }
 .cms-signin-coordinate {
   font-family: var(--font-mono);
@@ -987,6 +995,54 @@ body:has(.cms)::-webkit-scrollbar-thumb:hover,
   font-size: 8px;
   letter-spacing: 0.03em;
   color: #b6c1cb;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+}
+.cms-signin-playback {
+  position: absolute;
+  z-index: 2;
+  top: 28px;
+  right: 28px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #ffffff50;
+  border-radius: 50%;
+  color: #fff;
+  background: #24354060;
+  backdrop-filter: blur(8px);
+}
+.cms-signin-playback:hover {
+  background: #243540a0;
+}
+.cms-signin-photo-switches {
+  display: flex;
+  width: 100%;
+  gap: 5px;
+}
+.cms-signin-photo-switches button {
+  display: grid;
+  align-items: center;
+  width: 32px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.cms-signin-photo-switches button span {
+  height: 2px;
+  border-radius: 2px;
+  background: #ffffff55;
+  transition: background-color 150ms;
+}
+.cms-signin-photo-switches button[aria-pressed="true"] span {
+  background: var(--studio-accent);
+}
+.cms-signin-playback:focus-visible,
+.cms-signin-photo-switches button:focus-visible {
+  outline: 2px solid var(--studio-accent);
+  outline-offset: 3px;
 }
 @media (max-width: 1080px) {
   .cms-profile-layout {
@@ -1185,6 +1241,9 @@ body:has(.cms)::-webkit-scrollbar-thumb:hover,
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .cms-signin-slide {
+    transition: none;
+  }
   .cms-select-content,
   .cms-menu-content,
   .cms-calendar-popover {

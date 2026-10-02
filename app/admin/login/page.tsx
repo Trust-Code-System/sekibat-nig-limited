@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import Image from "next/image";
+import { LoginGallery } from "@/components/admin/LoginGallery";
 import { StudioBrand, Icon, StudioMotion } from "@/components/admin/StudioUI";
 import { LoginForm } from "@/components/admin/LoginForm";
 import { configured, signedIn } from "@/lib/cms/auth";
@@ -48,42 +48,7 @@ export default async function LoginPage() {
             <span>WEBSITE ADMINISTRATION</span>
           </footer>
         </section>
-        <section
-          className="cms-signin-visual"
-          aria-label="Sekibat architecture"
-        >
-          <Image
-            src="/media/properties/sekibat-heights-01.jpg"
-            alt="Sekibat Heights contemporary residential building"
-            fill
-            sizes="(max-width: 760px) 100vw, 50vw"
-            priority
-            unoptimized
-          />
-          <span className="cms-signin-photo-tag">
-            <Icon name="properties" size={16} /> BUILT WITH PURPOSE.
-          </span>
-          <div className="cms-signin-photo-copy">
-            <span className="cms-signin-coordinate">
-              SEKIBAT / A DIFFERENT PERSPECTIVE
-            </span>
-            <h2>
-              Beautiful spaces.
-              <br />
-              Thoughtfully presented.
-            </h2>
-            <div className="cms-signin-photo-rule" />
-            <p>
-              The properties. The projects. The stories.
-              <br />
-              Bring them all into focus.
-            </p>
-          </div>
-          <div className="cms-signin-photo-footer">
-            <span>SEKIBAT HEIGHTS</span>
-            <span>01 — RESIDENTIAL</span>
-          </div>
-        </section>
+        <LoginGallery />
       </main>
     </StudioMotion>
   );

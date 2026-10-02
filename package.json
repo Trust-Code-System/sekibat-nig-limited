@@ -9,6 +9,7 @@
     "lint": "eslint",
     "smoke": "node scripts/smoke.mjs",
     "smoke:cms": "node scripts/cms-smoke.mjs",
+    "smoke:login-gallery": "node scripts/login-gallery-smoke.mjs",
     "shot": "node scripts/shot.mjs"
   },
   "dependencies": {
