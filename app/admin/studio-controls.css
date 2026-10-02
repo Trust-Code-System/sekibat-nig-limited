@@ -327,7 +327,7 @@
   background: #fff0e9;
 }
 
-/* Quiet, warm scrollbar thumbs on pale tracks; darker tracks in the rail. */
+/* Quiet, warm scrollbar thumbs on pale tracks. */
 html:has(.cms)::-webkit-scrollbar,
 body:has(.cms)::-webkit-scrollbar,
 .cms *::-webkit-scrollbar {
@@ -353,15 +353,17 @@ body:has(.cms)::-webkit-scrollbar-thumb:hover,
 }
 .cms-sidebar {
   overflow-y: auto;
-  scrollbar-color: #ad806b var(--studio-dark);
   transition: width 0.22s ease;
 }
-.cms-sidebar::-webkit-scrollbar-track {
-  background: var(--studio-dark);
+.cms-sidebar,
+.cms-mobile-dialog {
+  scrollbar-width: none;
 }
-.cms-sidebar::-webkit-scrollbar-thumb {
-  border-color: var(--studio-dark);
-  background: #ad806b;
+.cms-sidebar::-webkit-scrollbar,
+.cms-mobile-dialog::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 /* The rail expands without changing the mobile drawer. */
@@ -415,9 +417,6 @@ body:has(.cms)::-webkit-scrollbar-thumb:hover,
 .is-sidebar-collapsed > .cms-sidebar {
   width: 80px;
   padding: 29px 13px 16px;
-}
-.cms-mobile-dialog {
-  scrollbar-color: #ad806b var(--studio-dark);
 }
 .is-sidebar-collapsed > .cms-sidebar .cms-brand {
   padding: 0;
