@@ -30,6 +30,12 @@ import {
   DotsThreeIcon,
   FloppyDiskIcon,
   WarningCircleIcon,
+  UserCircleIcon,
+  CalendarBlankIcon,
+  SidebarSimpleIcon,
+  EnvelopeSimpleIcon,
+  CaretLeftIcon,
+  CaretRightIcon,
 } from "@phosphor-icons/react";
 const icons = {
   overview: SquaresFourIcon,
@@ -62,6 +68,12 @@ const icons = {
   more: DotsThreeIcon,
   save: FloppyDiskIcon,
   warning: WarningCircleIcon,
+  profile: UserCircleIcon,
+  calendar: CalendarBlankIcon,
+  sidebar: SidebarSimpleIcon,
+  email: EnvelopeSimpleIcon,
+  left: CaretLeftIcon,
+  right: CaretRightIcon,
 };
 export function Icon({ name, size = 20 }: { name: string; size?: number }) {
   const Component = icons[name as keyof typeof icons] || SquaresFourIcon;

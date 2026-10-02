@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { COLLECTIONS, type Collection, type Entry } from "@/lib/cms/schema";
 import { Icon } from "./StudioUI";
 import { status, title } from "./content-utils";
-export type View = "overview" | Collection | "media";
+export type View = "overview" | Collection | "media" | "profile";
 export function CommandMenu({
   entries,
   onClose,
@@ -24,6 +24,7 @@ export function CommandMenu({
     { key: "overview", label: "Overview" },
     ...COLLECTIONS,
     { key: "media", label: "Media library" },
+    { key: "profile", label: "Your profile" },
   ].filter((item) => item.label.toLowerCase().includes(query.toLowerCase()));
   const matches = entries
     .filter((e) =>

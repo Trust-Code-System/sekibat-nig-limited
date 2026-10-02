@@ -14,70 +14,26 @@ export default async function LoginPage() {
   if (await signedIn()) redirect("/admin");
   return (
     <StudioMotion>
-      <main className="cms-login">
-        <section className="cms-login-story">
-          <StudioBrand />
-          <div className="cms-login-story-copy">
-            <span className="cms-overline">
-              <span /> A SPACE FOR YOUR NEXT CHAPTER
-            </span>
-            <h2>
-              Great spaces.
-              <br />
-              Even better
-              <br />
-              <em>first impressions.</em>
-            </h2>
-            <p>
-              The work you do deserves a website that keeps up. Make it yours,
-              one update at a time.
-            </p>
-          </div>
-          <div className="cms-login-art">
-            <Image
-              src="/media/properties/sekibat-heights-01.jpg"
-              alt="Contemporary Sekibat residential architecture"
-              width={850}
-              height={950}
-              priority
-              unoptimized
-            />
-            <div className="cms-login-photo-caption">
-              <span>
-                <Icon name="properties" /> A different perspective.
-              </span>
-              <span>01 / SEKIBAT</span>
-            </div>
-            <div className="cms-login-art-label">
-              <Icon name="check" size={16} /> Thoughtfully built. Beautifully
-              presented.
-            </div>
-          </div>
-          <div className="cms-login-story-footer">
-            <span>PROPERTY. PEOPLE. POSSIBILITY.</span>
-            <span>LAGOS, NIGERIA ↗</span>
-          </div>
-        </section>
-        <section className="cms-login-form">
-          <div className="cms-login-mobile-brand">
+      <main className="cms-signin">
+        <section className="cms-signin-form">
+          <header className="cms-signin-header">
             <StudioBrand />
-          </div>
-          <Link href="/" className="cms-login-back">
-            <Icon name="back" size={16} /> Back to website
-          </Link>
-          <Reveal className="cms-login-form-inner">
-            <span className="cms-access-label">
-              <Icon name="lock" size={14} /> YOUR PRIVATE WORKSPACE
+            <Link href="/" className="cms-signin-back">
+              <Icon name="back" size={16} />
+              <span>Back to website</span>
+            </Link>
+          </header>
+          <Reveal className="cms-signin-inner">
+            <span className="cms-signin-kicker">
+              <span /> SEKIBAT CONTENT STUDIO
             </span>
             <h1>
-              Good to have
+              Sign in to
               <br />
-              you back<span>.</span>
+              your studio<span>.</span>
             </h1>
             <p>
-              Everything your website needs.
-              <br />
-              All in one place.
+              Good to see you again. Your website is ready for its next update.
             </p>
             {configured() ? (
               <LoginForm />
@@ -88,15 +44,51 @@ export default async function LoginPage() {
                 environment to enable sign in.
               </div>
             )}
-            <div className="cms-login-security">
+            <div className="cms-signin-security">
               <Icon name="lock" size={15} />
-              <span>Protected access · Sekibat administrators only</span>
+              <span>Private access for Sekibat administrators</span>
             </div>
           </Reveal>
-          <footer className="cms-login-form-footer">
-            <span>SEKIBAT NIG LIMITED</span>
-            <span>Content studio / 01</span>
+          <footer className="cms-signin-footer">
+            <span>© {new Date().getFullYear()} Sekibat Nig Limited</span>
+            <span>WEBSITE ADMINISTRATION</span>
           </footer>
+        </section>
+        <section
+          className="cms-signin-visual"
+          aria-label="Sekibat architecture"
+        >
+          <Image
+            src="/media/properties/sekibat-heights-01.jpg"
+            alt="Sekibat Heights contemporary residential building"
+            fill
+            sizes="(max-width: 760px) 100vw, 50vw"
+            priority
+            unoptimized
+          />
+          <span className="cms-signin-photo-tag">
+            <Icon name="properties" size={16} /> BUILT WITH PURPOSE.
+          </span>
+          <div className="cms-signin-photo-copy">
+            <span className="cms-signin-coordinate">
+              SEKIBAT / A DIFFERENT PERSPECTIVE
+            </span>
+            <h2>
+              Beautiful spaces.
+              <br />
+              Thoughtfully presented.
+            </h2>
+            <div className="cms-signin-photo-rule" />
+            <p>
+              The properties. The projects. The stories.
+              <br />
+              Bring them all into focus.
+            </p>
+          </div>
+          <div className="cms-signin-photo-footer">
+            <span>SEKIBAT HEIGHTS</span>
+            <span>01 — RESIDENTIAL</span>
+          </div>
         </section>
       </main>
     </StudioMotion>

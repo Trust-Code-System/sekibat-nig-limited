@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
 import { COLLECTIONS, type Collection, type Entry } from "@/lib/cms/schema";
 import { Icon, Reveal } from "./StudioUI";
 import { photo, status, title } from "./content-utils";
@@ -68,14 +67,6 @@ export function StudioOverview({
                 <span>
                   <Icon name="globe" size={13} /> sekibat website
                 </span>
-                <Link
-                  href="/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Open public website"
-                >
-                  <Icon name="external" size={18} />
-                </Link>
               </div>
               <span className="cms-showcase-image-bottom">
                 <span>HOMEPAGE / DRAFT IMAGE</span>

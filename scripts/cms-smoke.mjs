@@ -12,6 +12,10 @@ const localEnv = (name) =>
     .replace(/^(["'])(.*)\1$/, "$2");
 const password =
   process.env.SEKIBAT_ADMIN_PASSWORD || localEnv("SEKIBAT_ADMIN_PASSWORD");
+const email =
+  process.env.SEKIBAT_ADMIN_EMAIL ||
+  localEnv("SEKIBAT_ADMIN_EMAIL") ||
+  "test@sekibat.com";
 assert(password, "Configure SEKIBAT_ADMIN_PASSWORD before running CMS checks.");
 const directory = path.resolve(
   process.env.SEKIBAT_CMS_DIR || localEnv("SEKIBAT_CMS_DIR") || ".cms",
@@ -31,8 +35,9 @@ let uploaded;
 page.on("pageerror", (error) => errors.push(error.message));
 async function signIn(target) {
   await target.goto(`${base}/admin`);
+  await target.getByLabel("Email address", { exact: true }).fill(email);
   await target.getByLabel("Administrator password").fill(password);
-  await target.getByRole("button", { name: "Sign in →" }).click();
+  await target.getByRole("button", { name: "Sign in" }).click();
   await target
     .getByRole("heading", { name: "Your website. In good hands." })
     .waitFor();
@@ -58,10 +63,81 @@ try {
     },
   });
   assert.equal(denied.status(), 401, "Uploads require authentication.");
+  await mkdir(".artifacts", { recursive: true });
+  await page.screenshot({ path: ".artifacts/cms-login.png", fullPage: true });
+  await page.getByLabel("Email address", { exact: true }).fill(email);
   await page.getByLabel("Administrator password").fill("incorrect-password");
-  await page.getByRole("button", { name: "Sign in →" }).click();
+  await page.getByRole("button", { name: "Sign in" }).click();
   await page.getByRole("alert").filter({ hasText: "incorrect" }).waitFor();
+  await page
+    .getByLabel("Email address", { exact: true })
+    .fill("wrong@sekibat.com");
+  await page.getByLabel("Administrator password").fill(password);
+  await page.getByRole("button", { name: "Sign in" }).click();
+  await page.getByRole("alert").filter({ hasText: "incorrect" }).waitFor();
+  assert.equal(
+    new URL(page.url()).pathname,
+    "/admin/login",
+    "Correct password cannot bypass email validation.",
+  );
   await signIn(page);
+  assert.equal(
+    await page.locator('a[href="/"]:visible').count(),
+    1,
+    "Only one global website link remains.",
+  );
+  assert.equal(await page.locator(".cms-site-switch").count(), 0);
+  await page.getByRole("combobox", { name: "Sort content" }).click();
+  await page.getByRole("option", { name: "Title A–Z" }).click();
+  assert.match(
+    await page.getByRole("combobox", { name: "Sort content" }).innerText(),
+    /Title A–Z/,
+  );
+  await page.getByRole("combobox", { name: "Sort content" }).click();
+  await page.keyboard.press("Escape");
+  await page.getByRole("listbox").waitFor({ state: "hidden" });
+  assert.equal(
+    await page.getByRole("listbox").count(),
+    0,
+    "Escape closes dropdowns.",
+  );
+  await page.getByRole("button", { name: "Create content" }).click();
+  await page.getByRole("menuitem", { name: "New project" }).click();
+  await page.getByLabel("Title", { exact: true }).waitFor();
+  await page.getByRole("button", { name: "Overview", exact: true }).click();
+  await page.getByRole("button", { name: "Open profile", exact: true }).click();
+  assert.equal(
+    await page.getByLabel("Sign-in email").inputValue(),
+    email.toLowerCase(),
+  );
+  await page.getByLabel("Display name").fill("Studio Admin");
+  await page.getByRole("button", { name: "Save preferences" }).click();
+  await page
+    .getByRole("status")
+    .filter({ hasText: "Profile preferences saved" })
+    .waitFor();
+  await page
+    .getByRole("button", { name: "Collapse sidebar", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Expand sidebar", exact: true })
+    .waitFor();
+  await page.reload();
+  await page
+    .getByRole("button", { name: "Expand sidebar", exact: true })
+    .waitFor();
+  assert.equal(
+    await page.locator(".cms-topbar-avatar").innerText(),
+    "SA",
+    "Profile and compact navigation persist after reload.",
+  );
+  await page
+    .getByRole("button", { name: "Expand sidebar", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Open profile", exact: true }).click();
+  await page.getByLabel("Display name").fill("Administrator");
+  await page.getByRole("button", { name: "Save preferences" }).click();
+  await page.getByRole("button", { name: "Overview", exact: true }).click();
   await mkdir(".artifacts", { recursive: true });
   await page.screenshot({
     path: ".artifacts/cms-overview.png",
@@ -76,6 +152,51 @@ try {
     .getByRole("button", { name: /Sekibat Heights.*properties/ })
     .click();
   await page.getByLabel("Title", { exact: true }).waitFor();
+  assert.equal(
+    await page
+      .locator(
+        'select:not([aria-hidden="true"]):visible, input[type="date"]:visible',
+      )
+      .count(),
+    0,
+    "Editor uses branded controls.",
+  );
+  await page.getByRole("combobox", { name: "Type", exact: true }).click();
+  await page.getByRole("option", { name: "Commercial", exact: true }).click();
+  assert.match(
+    await page.getByRole("combobox", { name: "Type", exact: true }).innerText(),
+    /Commercial/,
+  );
+  await page.getByRole("combobox", { name: "Status", exact: true }).click();
+  await page.getByRole("option", { name: "Leased", exact: true }).click();
+  await page.getByRole("combobox", { name: "Ownership", exact: true }).click();
+  await page.getByRole("option", { name: "Client", exact: true }).click();
+  await page.getByLabel("Date listed", { exact: true }).click();
+  await page
+    .getByRole("button", { name: "Go to the Next Month", exact: true })
+    .click();
+  await page
+    .locator(".cms-calendar .rdp-day:not(.rdp-outside) button")
+    .filter({ hasText: /^15$/ })
+    .click();
+  assert.match(
+    await page.locator('input[name="cms-listedAt"]').inputValue(),
+    /^\d{4}-\d{2}-15$/,
+  );
+  await page.getByLabel("Date listed", { exact: true }).click();
+  await page.keyboard.press("Escape");
+  await page.locator(".cms-calendar-popover").waitFor({ state: "hidden" });
+  assert.equal(await page.locator(".cms-calendar-popover").count(), 0);
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.reload();
+  // Discard these unsaved UI-control checks and continue with the original content.
+  await page.getByRole("button", { name: "Edit homepage" }).waitFor();
+  await page.keyboard.press("Control+k");
+  await page.getByLabel("Search pages and records").fill("Sekibat Heights");
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: /Sekibat Heights.*properties/ })
+    .click();
   await page.getByRole("button", { name: "Compact preview" }).click();
   assert.equal(
     await page
@@ -309,7 +430,9 @@ try {
   });
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.getByRole("button", { name: "Sign out" }).click();
-  await page.getByRole("heading", { name: "Good to have you back." }).waitFor();
+  await page
+    .getByRole("heading", { name: "Sign in to your studio." })
+    .waitFor();
   await page.goto(`${base}/cms`);
   assert.equal(
     new URL(page.url()).pathname,
@@ -318,7 +441,7 @@ try {
   );
   assert.deepEqual(errors, [], "No browser runtime errors.");
   console.log(
-    "CMS checks passed: authentication, protected uploads, draft persistence, publishing, validation, conflict prevention, unpublishing, media picker and folders, new content, quick search, list/grid filtering, compact preview, mobile layout/navigation, sign-out and CMS alias.",
+    "CMS checks passed: email/password authentication, branded dropdowns and calendars, profile preferences, collapsible sidebar persistence, protected uploads, draft persistence, publishing, validation, conflict prevention, unpublishing, media picker and folders, new content, quick search, list/grid filtering, compact preview, mobile layout/navigation, sign-out and CMS alias.",
   );
 } finally {
   await browser.close();

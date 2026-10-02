@@ -7,11 +7,16 @@ The accounting and operational property-management system is a separate future s
 ## Access
 
 Set `SEKIBAT_ADMIN_PASSWORD` (12+ characters) and `SEKIBAT_ADMIN_SECRET` (32+ characters) in the
-server environment. Restart the server after changing either. The login uses the password;
+server environment. Set `SEKIBAT_ADMIN_EMAIL` to choose the administrator email (defaults to
+`test@sekibat.com`). Restart the server after changing credentials. The login checks both email
+and password; email comparison ignores surrounding whitespace and letter case.
 the secret signs eight-hour HTTP-only, SameSite=Strict sessions. Production requires HTTPS.
-Changing either value invalidates existing sessions. With missing or short credentials,
+Changing the email, password or secret invalidates existing sessions. With missing or short credentials,
 access stays disabled. A single administrator account is supported. Sign-in attempts are
 limited to 20 per 15 minutes per server process across all visitors.
+
+The profile shows the configured sign-in email. Display name and compact-navigation preferences
+are stored only in the current browser; they do not change the sign-in account or permissions.
 
 For this local workspace, generated credentials are in the ignored `.env.local` file. Keep
 that file private and use different credentials for deployment.

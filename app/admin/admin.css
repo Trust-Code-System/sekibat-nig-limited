@@ -1548,6 +1548,17 @@
   justify-content: space-between;
   gap: 7px;
 }
+.cms-field > label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 7px;
+}
+.cms-field > label > small {
+  color: var(--studio-muted);
+  font-size: 10px;
+  font-weight: 400;
+}
 .cms-field > span > small {
   font-size: 8px;
   font-weight: 400;
@@ -2563,7 +2574,8 @@
 html:has(.cms),
 body:has(.cms),
 .cms * {
-  scrollbar-color: #bdc6d1 transparent;
+  scrollbar-width: thin;
+  scrollbar-color: #cb947d #edf0f3;
 }
 .cms ::selection {
   background: #f0c1aa;

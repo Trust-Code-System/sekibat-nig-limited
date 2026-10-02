@@ -17,6 +17,9 @@ import { CommandMenu, type View } from "./CommandMenu";
 import { ContentEditor } from "./ContentEditor";
 import { MediaGrid } from "./MediaLibrary";
 import { photo, status, template, title } from "./content-utils";
+import { StudioMenu, StudioSelect, StudioTooltip } from "./StudioControls";
+import { ProfilePanel } from "./ProfilePanel";
+import { initials, useStudioPreference } from "./studio-preferences";
 
 function Navigation({
   view,
@@ -24,27 +27,19 @@ function Navigation({
   entries,
   media,
   navigate,
+  collapsed = false,
+  name,
 }: {
   view: View;
   mobile: boolean;
   entries: Entry[];
   media: string[];
   navigate: (next: View, entry?: Entry | null) => void;
+  collapsed?: boolean;
+  name: string;
 }) {
   return (
     <>
-      <div className="cms-site-switch">
-        <span className="cms-site-icon">
-          <Icon name="globe" size={19} />
-        </span>
-        <span>
-          <strong>Sekibat website</strong>
-          <small>
-            <span className="cms-site-dot" />
-            Content workspace
-          </small>
-        </span>
-      </div>
       <nav aria-label="Content management">
         <span className="cms-nav-label">WORKSPACE</span>
         {[
@@ -57,27 +52,30 @@ function Navigation({
               <span className="cms-nav-label">WEBSITE CONTENT</span>
             )}
             {index === 6 && <span className="cms-nav-label">ASSETS</span>}
-            <button
-              onClick={() => navigate(item.key as View)}
-              className={view === item.key ? "active" : ""}
-              aria-current={view === item.key ? "page" : undefined}
-            >
-              {view === item.key && (
-                <motion.span
-                  layoutId={mobile ? "mobile-nav-active" : "nav-active"}
-                  className="cms-nav-active"
-                />
-              )}
-              <Icon name={item.key} />
-              <span>{item.label}</span>
-              {index > 0 && (
-                <small>
-                  {item.key === "media"
-                    ? media.length
-                    : entries.filter((e) => e.collection === item.key).length}
-                </small>
-              )}
-            </button>
+            <StudioTooltip label={item.label} enabled={collapsed}>
+              <button
+                onClick={() => navigate(item.key as View)}
+                className={view === item.key ? "active" : ""}
+                aria-current={view === item.key ? "page" : undefined}
+                aria-label={collapsed ? item.label : undefined}
+              >
+                {view === item.key && (
+                  <motion.span
+                    layoutId={mobile ? "mobile-nav-active" : "nav-active"}
+                    className="cms-nav-active"
+                  />
+                )}
+                <Icon name={item.key} />
+                <span className="cms-nav-text">{item.label}</span>
+                {index > 0 && (
+                  <small>
+                    {item.key === "media"
+                      ? media.length
+                      : entries.filter((e) => e.collection === item.key).length}
+                  </small>
+                )}
+              </button>
+            </StudioTooltip>
           </div>
         ))}
       </nav>
@@ -102,22 +100,33 @@ function Navigation({
             Make an update <Icon name="next" size={15} />
           </button>
         </div>
-        <Link
-          href="/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="cms-sidebar-visit"
-        >
-          <Icon name="external" size={18} />
-          Visit website
-          <Icon name="external" size={15} />
-        </Link>
+        <StudioTooltip label="Visit website" enabled={collapsed}>
+          <Link
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cms-sidebar-visit"
+            aria-label="Visit website"
+          >
+            <Icon name="external" size={18} />
+            <span>Visit website</span>
+          </Link>
+        </StudioTooltip>
         <div className="cms-admin-person">
-          <span className="cms-avatar">SA</span>
-          <span>
-            <strong>Administrator</strong>
-            <small>Sekibat Nig Limited</small>
-          </span>
+          <StudioTooltip label="Your profile" enabled={collapsed}>
+            <button
+              className="cms-profile-link"
+              onClick={() => navigate("profile")}
+              aria-label="Your profile"
+              aria-current={view === "profile" ? "page" : undefined}
+            >
+              <span className="cms-avatar">{initials(name)}</span>
+              <span className="cms-profile-link-copy">
+                <strong>{name}</strong>
+                <small>Administrator</small>
+              </span>
+            </button>
+          </StudioTooltip>
           <form action={logout}>
             <button
               className="cms-icon-button"
@@ -141,12 +150,20 @@ export function AdminWorkspace({
   entries: initial,
   media: initialMedia,
   remote,
+  email,
 }: {
   entries: Entry[];
   media: string[];
   remote: boolean;
+  email: string;
 }) {
   const ready = useSyncExternalStore(subscribeReady, clientReady, serverReady);
+  const [collapsedPreference, saveCollapsed] = useStudioPreference(
+    "collapsed",
+    "false",
+  );
+  const [name] = useStudioPreference("name", "Administrator");
+  const collapsed = collapsedPreference === "true";
   const [entries, setEntries] = useState(initial);
   const [media, setMedia] = useState(initialMedia);
   const [view, setView] = useState<View>("overview");
@@ -159,7 +176,6 @@ export function AdminWorkspace({
   const [mobile, setMobile] = useState(false);
   const dirty = useRef(false);
   const menuRef = useRef<HTMLDialogElement>(null);
-  const newRef = useRef<HTMLDetailsElement>(null);
   const navigate = useCallback((next: View, entry: Entry | null = null) => {
     if (
       dirty.current &&
@@ -202,7 +218,6 @@ export function AdminWorkspace({
   }, []);
   function create(collection: Collection) {
     const data = template(collection);
-    if (newRef.current) newRef.current.open = false;
     navigate(collection, {
       id: String(data.id),
       collection,
@@ -248,41 +263,52 @@ export function AdminWorkspace({
             : "service"}
       </button>
     ) : view === "overview" ? (
-      <details ref={newRef} className="cms-new-menu">
-        <summary className="cms-button cms-primary">
-          <Icon name="plus" size={18} />
-          Create content
-          <Icon name="down" size={14} />
-        </summary>
-        <div>
-          {(["properties", "projects", "services"] as Collection[]).map((c) => (
-            <button disabled={remote} key={c} onClick={() => create(c)}>
-              <Icon name={c} />
-              New{" "}
-              {c === "properties"
-                ? "property"
-                : c === "projects"
-                  ? "project"
-                  : "service"}
-              <Icon name="plus" size={15} />
-            </button>
-          ))}
-        </div>
-      </details>
+      <StudioMenu
+        trigger={
+          <button disabled={remote} className="cms-button cms-primary">
+            <Icon name="plus" size={18} />
+            Create content
+            <Icon name="down" size={14} />
+          </button>
+        }
+        items={[
+          {
+            label: "New property",
+            icon: "properties",
+            disabled: remote,
+            onSelect: () => create("properties"),
+          },
+          {
+            label: "New project",
+            icon: "projects",
+            disabled: remote,
+            onSelect: () => create("projects"),
+          },
+          {
+            label: "New service",
+            icon: "services",
+            disabled: remote,
+            onSelect: () => create("services"),
+          },
+        ]}
+      />
     ) : null;
   return (
     <StudioMotion>
-      <div className="cms-workspace" data-ready={ready}>
+      <div
+        className={`cms-workspace ${collapsed ? "is-sidebar-collapsed" : ""}`}
+        data-ready={ready}
+      >
         <a href="#admin-main" className="cms-skip">
           Skip to content
         </a>
-        <aside className="cms-sidebar">
+        <aside id="cms-sidebar" className="cms-sidebar">
           <button
             className="cms-brand"
             onClick={() => navigate("overview")}
             aria-label="Sekibat content studio overview"
           >
-            <StudioBrand />
+            <StudioBrand compact={collapsed} />
           </button>
           <Navigation
             view={view}
@@ -290,11 +316,22 @@ export function AdminWorkspace({
             entries={entries}
             media={media}
             navigate={navigate}
+            collapsed={collapsed}
+            name={name}
           />
         </aside>
         <div className="cms-main-wrap">
           <header className="cms-topbar">
             <div className="cms-breadcrumb">
+              <button
+                className="cms-desktop-collapse cms-icon-button"
+                aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+                aria-expanded={!collapsed}
+                aria-controls="cms-sidebar"
+                onClick={() => saveCollapsed(String(!collapsed))}
+              >
+                <Icon name="sidebar" size={20} />
+              </button>
               <button
                 className="cms-mobile-menu cms-icon-button"
                 aria-label="Open navigation"
@@ -309,7 +346,11 @@ export function AdminWorkspace({
                 {selected
                   ? title(selected)
                   : collection?.label ||
-                    (view === "media" ? "Media library" : "Overview")}
+                    (view === "media"
+                      ? "Media library"
+                      : view === "profile"
+                        ? "Your profile"
+                        : "Overview")}
               </strong>
             </div>
             <div className="cms-topbar-actions">
@@ -323,16 +364,13 @@ export function AdminWorkspace({
                 <kbd>Ctrl K</kbd>
               </button>
               <span className="cms-topbar-separator" />
-              <Link
-                href="/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="cms-topbar-website"
+              <button
+                className="cms-avatar cms-topbar-avatar"
+                aria-label="Open profile"
+                onClick={() => navigate("profile")}
               >
-                View website
-                <Icon name="external" size={16} />
-              </Link>
-              <span className="cms-avatar cms-topbar-avatar">SA</span>
+                {initials(name)}
+              </button>
             </div>
           </header>
           <main id="admin-main" className="cms-main">
@@ -343,7 +381,9 @@ export function AdminWorkspace({
                 until the administrator disables SEKIBAT_API_URL.
               </div>
             )}
-            {selected ? (
+            {view === "profile" ? (
+              <ProfilePanel email={email} />
+            ) : selected ? (
               <ContentEditor
                 key={`${selected.collection}/${selected.id}`}
                 entry={selected}
@@ -515,16 +555,16 @@ export function AdminWorkspace({
                               placeholder="Search content…"
                             />
                           </label>
-                          <label className="cms-sort">
-                            <span className="sr-only">Sort content</span>
-                            <select
-                              value={sort}
-                              onChange={(event) => setSort(event.target.value)}
-                            >
-                              <option value="recent">Recently updated</option>
-                              <option value="title">Title A–Z</option>
-                            </select>
-                          </label>
+                          <StudioSelect
+                            className="cms-sort-trigger"
+                            label="Sort content"
+                            value={sort}
+                            onValueChange={setSort}
+                            options={[
+                              { value: "recent", label: "Recently updated" },
+                              { value: "title", label: "Title A–Z" },
+                            ]}
+                          />
                         </div>
                       </div>
                       <div
@@ -709,6 +749,7 @@ export function AdminWorkspace({
               entries={entries}
               media={media}
               navigate={navigate}
+              name={name}
             />
           )}
         </dialog>

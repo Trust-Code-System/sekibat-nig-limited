@@ -15,6 +15,7 @@ import {
 } from "./content-utils";
 import { Icon, Reveal } from "./StudioUI";
 import { ImageField, MediaPicker } from "./MediaLibrary";
+import { StudioSelect, StudioDatePicker } from "./StudioControls";
 const numbers = new Set(["price", "bedrooms", "bathrooms", "size", "order"]);
 const dates = new Set(["listedAt", "completionDate"]);
 const longText = new Set([
@@ -315,27 +316,33 @@ export function ContentEditor({
                 ? ["sekibat", "client"]
                 : null;
         return (
-          <label
+          <div
             className={`cms-field ${longText.has(key) ? "cms-wide" : ""}`}
-            htmlFor={fieldId}
             key={key}
           >
-            <span>
+            <label htmlFor={fieldId}>
               {label(key)}
               {optional.has(key) && <small>Optional</small>}
-            </span>
+            </label>
             {choices ? (
-              <select
+              <StudioSelect
                 id={fieldId}
                 value={String(value)}
-                onChange={(event) => update(keys, event.target.value)}
-              >
-                {choices.map((choice) => (
-                  <option key={choice} value={choice}>
-                    {label(choice.replaceAll("-", " "))}
-                  </option>
-                ))}
-              </select>
+                disabled={pending || remote}
+                onValueChange={(next) => update(keys, next)}
+                options={choices.map((choice) => ({
+                  value: choice,
+                  label: label(choice.replaceAll("-", " ")),
+                }))}
+              />
+            ) : dates.has(key) ? (
+              <StudioDatePicker
+                id={fieldId}
+                value={String(value ?? "")}
+                onValueChange={(next) => update(keys, next)}
+                optional={optional.has(key)}
+                disabled={pending || remote}
+              />
             ) : longText.has(key) ? (
               <textarea
                 id={fieldId}
@@ -349,11 +356,9 @@ export function ContentEditor({
                 type={
                   numbers.has(key)
                     ? "number"
-                    : dates.has(key)
-                      ? "date"
-                      : key === "email"
-                        ? "email"
-                        : "text"
+                    : key === "email"
+                      ? "email"
+                      : "text"
                 }
                 min={numbers.has(key) ? 0 : undefined}
                 step={key === "size" ? "any" : numbers.has(key) ? 1 : undefined}
@@ -374,7 +379,7 @@ export function ContentEditor({
                 hyphens.
               </small>
             )}
-          </label>
+          </div>
         );
       });
   }

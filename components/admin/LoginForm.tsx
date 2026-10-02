@@ -6,11 +6,24 @@ export function LoginForm() {
   const [state, action, pending] = useActionState(login, { error: "" });
   const [visible, setVisible] = useState(false);
   return (
-    <form action={action} className="cms-login-fields">
-      <label className="cms-field" htmlFor="admin-password">
-        Administrator password
-      </label>
-      <div className="cms-password">
+    <form action={action} className="cms-signin-fields">
+      <label htmlFor="admin-email">Email address</label>
+      <div className="cms-signin-input">
+        <Icon name="email" size={19} />
+        <input
+          id="admin-email"
+          name="email"
+          type="email"
+          autoComplete="username"
+          placeholder="you@sekibat.com"
+          required
+          maxLength={254}
+          aria-describedby={state.error ? "login-error" : undefined}
+          aria-invalid={!!state.error}
+        />
+      </div>
+      <label htmlFor="admin-password">Administrator password</label>
+      <div className="cms-signin-input">
         <Icon name="lock" size={19} />
         <input
           id="admin-password"
@@ -38,7 +51,7 @@ export function LoginForm() {
         </p>
       )}
       <button className="cms-button cms-primary" disabled={pending}>
-        <span>{pending ? "Signing in…" : "Sign in →"}</span>
+        <span>{pending ? "Signing in…" : "Sign in"}</span>
         <Icon name="next" />
       </button>
     </form>
