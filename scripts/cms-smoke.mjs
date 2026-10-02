@@ -55,6 +55,50 @@ async function clickOutside(target) {
   assert(box, "The studio header remains visible above open controls.");
   await target.mouse.click(box.x + 150, box.y + 25);
 }
+async function checkLoginFit(target, sizes) {
+  for (const viewport of sizes) {
+    await target.setViewportSize(viewport);
+    const fit = await target.evaluate(() => {
+      const root = document.documentElement;
+      const controls = [
+        ...document.querySelectorAll(
+          '.cms-signin input, .cms-signin-fields > button, .cms-signin [role="alert"], .cms-signin-header, .cms-signin-footer',
+        ),
+      ];
+      return {
+        height: root.scrollHeight,
+        width: root.scrollWidth,
+        clipped: controls
+          .filter((element) => {
+            const bounds = element.getBoundingClientRect();
+            return (
+              bounds.height > 0 &&
+              (bounds.top < -1 ||
+                bounds.bottom > innerHeight + 1 ||
+                bounds.left < -1 ||
+                bounds.right > innerWidth + 1)
+            );
+          })
+          .map(
+            (element) =>
+              element.getAttribute("aria-label") ||
+              element.textContent ||
+              element.id,
+          ),
+      };
+    });
+    assert(
+      fit.height <= viewport.height + 1 && fit.width <= viewport.width + 1,
+      `Login must fit ${viewport.width}×${viewport.height}: ${JSON.stringify(fit)}`,
+    );
+    assert.deepEqual(
+      fit.clipped,
+      [],
+      "Login controls and errors stay within the screen.",
+    );
+  }
+  await target.setViewportSize({ width: 1440, height: 1000 });
+}
 try {
   await page.goto(`${base}/admin`);
   assert(
@@ -72,11 +116,30 @@ try {
   });
   assert.equal(denied.status(), 401, "Uploads require authentication.");
   await mkdir(".artifacts", { recursive: true });
+  await page.evaluate(() => document.fonts.ready);
+  await checkLoginFit(page, [
+    { width: 320, height: 568 },
+    { width: 360, height: 640 },
+    { width: 390, height: 844 },
+    { width: 768, height: 1024 },
+    { width: 1024, height: 768 },
+    { width: 1280, height: 617 },
+    { width: 1366, height: 768 },
+    { width: 1440, height: 900 },
+    { width: 844, height: 390 },
+    { width: 568, height: 320 },
+  ]);
   await page.screenshot({ path: ".artifacts/cms-login.png", fullPage: true });
   await page.getByLabel("Email address", { exact: true }).fill(email);
   await page.getByLabel("Administrator password").fill("incorrect-password");
   await page.getByRole("button", { name: "Sign in" }).click();
   await page.getByRole("alert").filter({ hasText: "incorrect" }).waitFor();
+  await checkLoginFit(page, [
+    { width: 320, height: 568 },
+    { width: 1280, height: 617 },
+    { width: 844, height: 390 },
+    { width: 568, height: 320 },
+  ]);
   await page
     .getByLabel("Email address", { exact: true })
     .fill("wrong@sekibat.com");

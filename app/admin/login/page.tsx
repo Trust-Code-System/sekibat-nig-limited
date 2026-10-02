@@ -1,12 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Image from "next/image";
-import {
-  StudioBrand,
-  Icon,
-  Reveal,
-  StudioMotion,
-} from "@/components/admin/StudioUI";
+import { StudioBrand, Icon, StudioMotion } from "@/components/admin/StudioUI";
 import { LoginForm } from "@/components/admin/LoginForm";
 import { configured, signedIn } from "@/lib/cms/auth";
 
@@ -23,13 +18,12 @@ export default async function LoginPage() {
               <span>Back to website</span>
             </Link>
           </header>
-          <Reveal className="cms-signin-inner">
+          <div className="cms-signin-inner">
             <span className="cms-signin-kicker">
               <span /> SEKIBAT CONTENT STUDIO
             </span>
             <h1>
-              Sign in to
-              <br />
+              Sign in to <br />
               your studio<span>.</span>
             </h1>
             <p>
@@ -48,7 +42,7 @@ export default async function LoginPage() {
               <Icon name="lock" size={15} />
               <span>Private access for Sekibat administrators</span>
             </div>
-          </Reveal>
+          </div>
           <footer className="cms-signin-footer">
             <span>© {new Date().getFullYear()} Sekibat Nig Limited</span>
             <span>WEBSITE ADMINISTRATION</span>
