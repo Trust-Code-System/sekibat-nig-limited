@@ -11,7 +11,13 @@ page.on("console", (message) => {
   if (message.type() === "error") errors.push(message.text());
 });
 page.on("pageerror", (error) => errors.push(String(error)));
-page.on("requestfailed", (request) => errors.push(`request failed: ${request.url()}`));
+page.on("requestfailed", (request) => {
+  // Next.js cancels speculative prefetches when this audit navigates to another page.
+  // These are normal browser cancellations; keep every actual network failure visible.
+  const reason = request.failure()?.errorText;
+  if (reason === "net::ERR_ABORTED") return;
+  errors.push(`request failed: ${request.url()} (${reason})`);
+});
 
 async function visit(path) {
   const response = await page.goto(new URL(path, base).toString(), {
@@ -76,6 +82,13 @@ for (const path of sitemapPaths) {
 
 await visit("/robots.txt");
 
+for (const [path, type] of [["/favicon.ico", "image/"], ["/icon.svg", "image/svg+xml"], ["/apple-icon.png", "image/png"]]) {
+  const icon = await fetch(new URL(path, base));
+  if (!icon.ok || !icon.headers.get("content-type")?.startsWith(type)) {
+    throw new Error(`${path} is not a usable icon`);
+  }
+}
+
 const revalidationProbe = await fetch(new URL("/api/revalidate", base), {
   method: "POST",
   headers: { "content-type": "application/json" },
@@ -102,6 +115,26 @@ await page.waitForURL("**/services");
 if (await page.getByRole("button", { name: "Close menu" }).count()) {
   throw new Error("Mobile navigation stayed open after route change");
 }
+
+await visit("/");
+const preview = page.getByRole("region", { name: "Explore our properties" });
+await page.getByRole("radio", { name: "Commercial", exact: true }).click();
+await page.waitForFunction(() => document.querySelector('[aria-labelledby="home-properties-heading"] [role="status"]')?.textContent === "1 space to explore");
+await preview.getByRole("heading", { name: "Victoria Commercial Centre" }).waitFor();
+await page.getByRole("radio", { name: "Commercial", exact: true }).press("ArrowRight");
+await preview.getByRole("heading", { name: "Epe Lakeview Land" }).waitFor();
+await page.getByRole("radio", { name: "Land", exact: true }).press("Home");
+await page.waitForFunction(() => document.querySelector('[aria-labelledby="home-properties-heading"] [role="status"]')?.textContent === "6 spaces to explore");
+
+await page.emulateMedia({ reducedMotion: "reduce" });
+await visit("/");
+await page.getByRole("heading", { name: /Elevate your space/ }).waitFor();
+await page.getByRole("radio", { name: "Homes", exact: true }).click();
+await preview.getByRole("heading", { name: "Sekibat Heights", exact: true }).waitFor();
+if (await page.getByRole("radio", { name: "Homes", exact: true }).getAttribute("aria-checked") !== "true") {
+  throw new Error("Reduced-motion property filtering failed");
+}
+await page.emulateMedia({ reducedMotion: "no-preference" });
 
 await visit("/properties");
 await page.getByRole("link", { name: "Ledger" }).click();
@@ -171,5 +204,5 @@ if (errors.length) {
 }
 
 console.log(
-  `Smoke checks passed: ${audited.size} sitemap routes, responsive overflow, document/accessibility invariants, mobile navigation, filters, ledger, gallery, 404, validation and enquiry submission.`
+  `Smoke checks passed: ${audited.size} sitemap routes, branded icons, keyboard property previews, reduced motion, responsive overflow, document/accessibility invariants, mobile navigation, filters, ledger, gallery, 404, validation and enquiry submission.`
 );

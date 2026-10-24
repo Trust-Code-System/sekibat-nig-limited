@@ -77,6 +77,10 @@
 
   /* ---- motion ---- */
   --ease-editorial: cubic-bezier(0.2, 0.6, 0.2, 1);
+  --duration-fast: 140ms;
+  --duration-normal: 240ms;
+  --duration-deliberate: 450ms;
+  --ease-tactile: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
@@ -433,7 +437,7 @@
     background: var(--color-lime);
     color: var(--color-onyx);
     transition:
-      transform 300ms var(--ease-editorial),
+      transform var(--duration-normal) var(--ease-tactile),
       background-color 300ms var(--ease-editorial);
   }
 
@@ -458,7 +462,7 @@
   }
 
   .cine-card {
-    transition: transform 500ms var(--ease-editorial);
+    transition: transform var(--duration-deliberate) var(--ease-tactile);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -494,7 +498,119 @@
   }
 }
 
+/* React Bits micro interactions, tuned to the existing Sekibat palette. */
+.rubber-segment {
+  position: relative;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  max-width: 100%;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--color-ivory-deep);
+}
+
+.rubber-segment button,
+.rubber-segment-selection span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 clamp(10px, 1.4vw, 22px);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.rubber-segment button {
+  border-radius: 999px;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  transition: opacity var(--duration-fast), transform var(--duration-fast) var(--ease-tactile);
+}
+
+.rubber-segment button:active { transform: scale(0.96); }
+.rubber-segment button:focus-visible { outline-offset: 5px; }
+.rubber-segment-selection {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  padding: 4px;
+  background: var(--color-onyx);
+  color: var(--color-ivory);
+  border-radius: inherit;
+}
+
+@media (max-width: 479px) {
+  .rubber-segment { width: 100%; }
+  .rubber-segment button,
+  .rubber-segment-selection span {
+    padding-inline: 6px;
+    font-size: var(--text-2xs);
+  }
+}
+
+.micro-button {
+  transition: transform var(--duration-normal) var(--ease-tactile),
+    background-color var(--duration-normal), box-shadow var(--duration-normal);
+}
+.micro-button:not(:disabled):active { transform: scale(0.96); }
+.micro-action:active .cine-arrow-btn,
+.group:active .cine-arrow-btn { transform: scale(0.92); }
+.group:focus-visible .cine-arrow-btn { background: var(--color-lime-deep); }
+
+@media (hover: hover) and (pointer: fine) {
+  .micro-button:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px -12px rgb(12 14 10 / 45%);
+  }
+  .rubber-segment button:hover { opacity: 0.8; }
+}
+
+@keyframes micro-arrive {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.micro-hero-intro,
+.micro-hero-title,
+.micro-hero-description {
+  animation: micro-arrive var(--duration-deliberate) var(--ease-tactile) backwards;
+}
+.micro-hero-title { animation-delay: 65ms; }
+.micro-hero-description { animation-delay: 130ms; }
+#mobile-nav:not([hidden]) .micro-menu-link {
+  animation: micro-arrive 300ms var(--ease-tactile) backwards;
+  animation-delay: calc(var(--menu-order, 0) * 35ms);
+}
+
 @media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-normal: 0ms;
+    --duration-deliberate: 0ms;
+  }
+
+  .cine-card:hover,
+  .micro-button:not(:disabled):hover,
+  .micro-button:not(:disabled):active,
+  .rubber-segment button:active,
+  .micro-action:active .cine-arrow-btn,
+  .group:active .cine-arrow-btn,
+  .group:hover .cine-arrow-btn,
+  .group:hover .cine-arrow-btn svg,
+  .group:hover img,
+  .cine-value:hover,
+  .cine-arrow-btn:hover,
+  .cine-arrow-btn:hover svg,
+  .group:hover .cine-nav-arrow,
+  .group:hover .cine-nav-arrow svg {
+    transform: none !important;
+  }
+
   /* The pinned scene collapses to a static hero; content stays reachable. */
   .cine-track {
     height: 100svh;

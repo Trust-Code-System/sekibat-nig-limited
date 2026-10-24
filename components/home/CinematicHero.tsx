@@ -80,12 +80,12 @@ export function CinematicHero({ featured, content }: { featured?: Property; cont
 
         <div className="cine-hero-copy pointer-events-none absolute inset-0 flex flex-col justify-end">
           <div className="mx-auto w-full max-w-(--container-site) px-6 pb-28 md:px-12 md:pb-24">
-            <p className="cine-eyebrow text-ivory/80">{content.eyebrow}</p>
-            <h1 className="mt-6 max-w-[16ch] font-sans text-[clamp(2.75rem,1.2rem+6.4vw,6.25rem)] leading-[0.94] font-medium tracking-[-0.045em] text-ivory">
+            <p className="micro-hero-intro cine-eyebrow text-ivory/80">{content.eyebrow}</p>
+            <h1 className="micro-hero-title mt-6 max-w-[16ch] font-sans text-[clamp(2.75rem,1.2rem+6.4vw,6.25rem)] leading-[0.94] font-medium tracking-[-0.045em] text-ivory">
               {content.heading}{" "}
               <span className="accent-serif tracking-[-0.02em]">{content.headingAccent}</span>
             </h1>
-            <p className="mt-7 max-w-[36ch] text-[0.9375rem] leading-relaxed text-ivory/70">
+            <p className="micro-hero-description mt-7 max-w-[36ch] text-[0.9375rem] leading-relaxed text-ivory/70">
               {content.introduction}
             </p>
           </div>

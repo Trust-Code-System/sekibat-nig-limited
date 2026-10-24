@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { HomePropertyCard } from "@/components/home/HomePropertyCard";
-import { Reveal } from "@/components/ui/Reveal";
+import { PropertyPreview } from "@/components/home/PropertyPreview";
 import type { Property } from "@/types";
 
 export function HomeProperties({ properties }: { properties: Property[] }) {
@@ -11,13 +10,7 @@ export function HomeProperties({ properties }: { properties: Property[] }) {
           Explore our <span className="accent-mark">properties</span>
         </h2>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {properties.map((property, i) => (
-            <Reveal key={property.id} delay={i * 60}>
-              <HomePropertyCard property={property} priority={i < 2} />
-            </Reveal>
-          ))}
-        </div>
+        <PropertyPreview properties={properties} />
 
         <div className="mt-14 flex justify-center">
           <Link href="/properties" className="group inline-flex items-center gap-3 text-sm font-medium text-ink">

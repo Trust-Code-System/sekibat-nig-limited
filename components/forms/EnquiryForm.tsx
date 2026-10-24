@@ -10,6 +10,7 @@ import {
 import { cn } from "@/lib/cn";
 import { CineSelect } from "@/components/ui/CineSelect";
 import { ENQUIRY_SUBJECTS } from "@/lib/validation";
+import { StatusMark } from "@/components/motion/StatusMark";
 
 /**
  * One form component for both the general contact form and the per-property enquiry.
@@ -62,12 +63,12 @@ function SubmitButton({ label }: { label: string }) {
     <button
       type="submit"
       disabled={pending}
-      className="group inline-flex items-center justify-center gap-3 rounded-full bg-onyx px-7 py-4 text-2xs font-medium tracking-[0.14em] text-ivory uppercase transition-colors hover:bg-ink disabled:cursor-not-allowed disabled:opacity-60"
+      className="micro-button group inline-flex min-w-48 items-center justify-center gap-3 rounded-full bg-onyx px-7 py-4 text-2xs font-medium tracking-[0.14em] text-ivory uppercase hover:bg-ink disabled:cursor-not-allowed disabled:opacity-60"
     >
       {pending ? "Sending…" : label}
-      <span aria-hidden className="inline-block transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+      {pending ? <StatusMark status="running" /> : <span aria-hidden className="inline-block transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
         ↗
-      </span>
+      </span>}
     </button>
   );
 }
@@ -100,7 +101,7 @@ export function EnquiryForm({
   if (state.status === "success") {
     return (
       <div className="border-t border-rule pt-8" role="status">
-        <p className="cine-eyebrow text-lime-deep">Enquiry received</p>
+        <p className="flex items-center gap-3 text-sm font-medium text-clay"><StatusMark status="done" /> Enquiry received</p>
         <p className="mt-4 max-w-[28ch] font-sans text-d3 font-medium tracking-[-0.03em]">{state.message}</p>
       </div>
     );
@@ -133,7 +134,7 @@ export function EnquiryForm({
           state.status === "error" && "mb-8 border-l-2 border-clay pl-4"
         )}
       >
-        {state.status === "error" && <p className="text-base text-clay">{state.message}</p>}
+        {state.status === "error" && <p className="flex items-center gap-3 text-base text-clay"><StatusMark status="failed" />{state.message}</p>}
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">

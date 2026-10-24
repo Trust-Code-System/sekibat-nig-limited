@@ -1,6 +1,7 @@
 "use client";
 
 import { useLenis } from "lenis/react";
+import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -20,6 +21,7 @@ const chip =
  */
 export function SiteHeader() {
   const pathname = usePathname();
+  const reduced = useReducedMotion();
   const [openForPath, setOpenForPath] = useState<string | null>(null);
   const open = openForPath === pathname;
   const [hiddenForPath, setHiddenForPath] = useState<string | null>(null);
@@ -85,11 +87,14 @@ export function SiteHeader() {
                   href={item.href}
                   aria-current={isActive(item.href) ? "page" : undefined}
                   className={cn(
-                    "px-3.5 py-1 text-[0.8125rem] transition-opacity duration-200",
+                    "relative rounded-full px-3.5 py-2 text-[0.8125rem] transition-colors duration-200",
                     isActive(item.href) ? "text-ivory" : "text-ivory/70 hover:text-ivory"
                   )}
                 >
-                  {item.label}
+                  {isActive(item.href) && <motion.span aria-hidden layoutId="primary-nav-selection"
+                    className="absolute inset-0 rounded-full bg-white/12"
+                    transition={{ type: "spring", duration: reduced ? 0 : 0.35, bounce: 0.1 }} />}
+                  <span className="relative">{item.label}</span>
                 </Link>
               </li>
             ))}
@@ -143,8 +148,9 @@ export function SiteHeader() {
                   href={item.href}
                   onClick={() => setOpenForPath(null)}
                   aria-current={isActive(item.href) ? "page" : undefined}
+                  style={{ "--menu-order": HOME_NAV.indexOf(item) } as React.CSSProperties}
                   className={cn(
-                    "block py-5 text-d3 font-medium tracking-[-0.03em]",
+                    "micro-menu-link block py-5 text-d3 font-medium tracking-[-0.03em]",
                     isActive(item.href) ? "text-lime-deep" : "text-ink"
                   )}
                 >

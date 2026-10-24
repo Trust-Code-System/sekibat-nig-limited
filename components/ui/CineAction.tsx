@@ -17,7 +17,7 @@ export function CineAction({
   className?: string;
 }) {
   return (
-    <Link href={href} className={cn("group inline-flex items-center gap-4", className)}>
+    <Link href={href} className={cn("micro-action group inline-flex items-center gap-4", className)}>
       <span className="cine-arrow-btn cine-arrow-btn-sm">
         <ArrowIcon />
       </span>
