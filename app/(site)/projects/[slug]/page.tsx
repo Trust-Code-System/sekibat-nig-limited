@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PropertyCard } from "@/components/cards/PropertyCard";
 import { ProjectCard } from "@/components/cards/ProjectCard";
 import { ImageFrame, SmartImage } from "@/components/media/SmartImage";
 import { CtaBand } from "@/components/sections/CtaBand";
@@ -9,6 +10,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Container, Display, Eyebrow, Prose, Section } from "@/components/ui/primitives";
 import {
   getProjectBySlug,
+  getPropertyBySlug,
   getProjectSlugs,
   getRelatedProjects,
   getServicesBySlugs,
@@ -35,11 +37,11 @@ export async function generateMetadata({
   if (!project) return { title: "Project not found" };
 
   return buildMetadata({
-    title: `${project.title}, ${project.location}`,
+    title: [project.title, project.location].filter(Boolean).join(", "),
     description: project.shortDescription,
     path: `/projects/${project.slug}`,
     image: project.images[0],
-    imageAlt: `${project.title}, ${project.location}`,
+    imageAlt: [project.title, project.location].filter(Boolean).join(", "),
   });
 }
 
@@ -52,19 +54,21 @@ export default async function ProjectPage({
   const project = await getProjectBySlug(slug);
   if (!project) notFound();
 
-  const [services, related] = await Promise.all([
+  const [services, related, linkedProperties] = await Promise.all([
     getServicesBySlugs(project.services),
     getRelatedProjects(slug, 2),
+    Promise.all((project.propertySlugs ?? []).map((propertySlug) => getPropertyBySlug(propertySlug))),
   ]);
 
-  const tone = statusTone(project.status);
+  const tone = project.status ? statusTone(project.status) : "muted";
+  const properties = linkedProperties.filter((property) => property !== null);
 
   const facts = [
     { label: "Reference", value: project.reference, mono: true },
-    { label: "Location", value: project.location },
+    ...(project.location ? [{ label: "Location", value: project.location }] : []),
     { label: "Type", value: project.projectType },
-    { label: "Client", value: project.client ?? "Sekibat (own development)" },
-    { label: "Status", value: PROJECT_STATUS_LABEL[project.status] },
+    ...(project.client ? [{ label: "Client", value: project.client }] : []),
+    ...(project.status ? [{ label: "Status", value: PROJECT_STATUS_LABEL[project.status] }] : []),
     ...(project.completionDate
       ? [{ label: "Completed", value: formatDate(project.completionDate) ?? "-" }]
       : []),
@@ -85,7 +89,7 @@ export default async function ProjectPage({
           <div>
             <p className="font-mono text-sm text-lime">{project.reference}</p>
             <p className={cn("mt-4 text-[0.625rem] font-medium tracking-[0.16em] uppercase", tone === "accent" ? "text-lime" : "text-ivory/45")}>
-              {PROJECT_STATUS_LABEL[project.status]}
+              {project.status ? PROJECT_STATUS_LABEL[project.status] : null}
               {project.completionDate && ` · ${formatDate(project.completionDate)}`}
             </p>
             <p className="mt-2 text-[0.625rem] font-medium tracking-[0.16em] text-ivory/45 uppercase">{project.location}</p>
@@ -97,14 +101,14 @@ export default async function ProjectPage({
         <ImageFrame ratio={RATIO.plate}>
           <SmartImage
             src={project.images[0]}
-            alt={`${project.title}, ${project.location}`}
+            alt={[project.title, project.location].filter(Boolean).join(", ")}
             sizes={SIZES.full}
             priority
           />
         </ImageFrame>
       </Container>
 
-      <Section index="01" label="The work" tone="deep">
+      <Section index="01" label="Overview" tone="deep">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-10">
           <div className="md:col-span-7">
             <Display as="h2" level={3} className="max-w-[24ch]">
@@ -207,6 +211,15 @@ export default async function ProjectPage({
                 />
               </ImageFrame>
             ))}
+          </div>
+        </Section>
+      )}
+
+      {properties.length > 0 && (
+        <Section index="03" label="Properties at this estate" id="properties">
+          <Display as="h2" level={3} className="mb-8">Explore properties at {project.title}.</Display>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {properties.map((property) => <PropertyCard key={property.id} property={property} />)}
           </div>
         </Section>
       )}

@@ -1,281 +1,210 @@
 import type { Property } from "@/types";
 
-/**
- * PLACEHOLDER DATA — not real Sekibat listings.
- *
- * Shaped exactly as the admin API is expected to return records, so swapping this file for
- * `fetch()` in `lib/api/properties.ts` requires no component changes. Nothing outside
- * `lib/api/` may import this file.
- *
- * Deliberate coverage: both ownership types, all four property types, all five statuses, and
- * several records with no price so the "Price on request" path is always exercised.
- */
+// Transcribed from the client-supplied Wemabod brochure (effective 1 July 2026).
+// Ownership, city/state, bathrooms and dimensions have not been confirmed.
+// WEM references are local website references, not supplied allocation numbers.
 export const properties: Property[] = [
   {
-    id: "p-0001",
-    reference: "PROP-000123",
-    slug: "sekibat-heights",
-    title: "Sekibat Heights",
-    location: { city: "Lekki", state: "Lagos", address: "Off Admiralty Way, Lekki Phase 1" },
-    type: "residential",
-    status: "available",
-    ownership: "sekibat",
-    shortDescription:
-      "A terrace of four-bedroom homes on Lekki Phase 1, built and owned by Sekibat.",
-    description:
-      "Sekibat Heights is a terrace of four-bedroom homes a short distance off Admiralty Way. Each unit runs across three floors with a private entrance, an open ground-floor living and dining level, and bedrooms arranged above with their own bathrooms. The development sits behind a controlled gate with a shared forecourt, borehole and treatment plant, and inverter-backed power to essential circuits.\n\nThe terrace was developed and is owned outright by Sekibat, and is managed by our own estate team.",
-    price: 285_000_000,
-    currency: "NGN",
-    bedrooms: 4,
-    bathrooms: 4,
-    size: 320,
-    sizeUnit: "sqm",
-    features: [
-      "Fitted kitchen with pantry",
-      "All bedrooms en-suite",
-      "Private entrance per unit",
-      "Inverter-backed power to essential circuits",
-      "Borehole and water treatment",
-      "Controlled gated access",
-      "Two parking bays per unit",
-      "Staff quarters",
+    "id": "wemabod-01",
+    "reference": "WEM-001",
+    "slug": "wemabod-twin-duplex",
+    "title": "4-bedroom twin duplex",
+    "location": {
+      "city": "",
+      "state": "",
+      "address": "Wemabod Housing Estate"
+    },
+    "type": "residential",
+    "status": "available",
+    "shortDescription": "A four-bedroom twin duplex house at Wemabod Housing Estate.",
+    "description": "A four-bedroom twin duplex house at Wemabod Housing Estate.\n\nPrices effective 1 July 2026. Excludes taxes, legal and estate infrastructure fees. Confirm current availability and payment terms with Sekibat. Applicable legal fees are payable when requesting title documents.\n\nContact Sekibat for the exact estate address, an inspection and the specification of the available unit.",
+    "price": 110000000,
+    "currency": "NGN",
+    "priceNote": "Prices effective 1 July 2026. Excludes taxes, legal and estate infrastructure fees. Confirm current availability and payment terms with Sekibat.",
+    "features": [
+      "Flexible payment — enquire for terms",
+      "24/7 security",
+      "Ample parking"
     ],
-    images: [
-      "/media/properties/sekibat-heights-01.jpg",
-      "/media/properties/sekibat-heights-02.jpg",
-      "/media/properties/sekibat-heights-03.jpg",
-      "/media/properties/sekibat-heights-04.jpg",
+    "images": [
+      "/media/properties/wemabod/twin-duplex-pending.png"
     ],
-    featured: true,
-    listedAt: "2026-07-14",
+    "featured": true,
+    "listedAt": "2026-07-01",
+    "bedrooms": 4
   },
   {
-    id: "p-0002",
-    reference: "PROP-000124",
-    slug: "oakview-residences",
-    title: "Oakview Residences",
-    location: { city: "Ikeja", state: "Lagos", address: "Oba Akran Avenue, Ikeja GRA" },
-    type: "residential",
-    status: "under-development",
-    ownership: "sekibat",
-    shortDescription: "Twenty-four three-bedroom apartments under construction in Ikeja GRA.",
-    description:
-      "Oakview Residences is a block of twenty-four three-bedroom apartments currently under construction in Ikeja GRA. Units are arranged four to a floor around a central core, each with a private balcony to the front elevation and a utility terrace behind the kitchen.\n\nStructural works are complete to the upper floors and the building is in the finishing phase. Units are not yet released for sale; pricing will be published once the first floor is handed over.",
-    bedrooms: 3,
-    bathrooms: 3,
-    size: 210,
-    sizeUnit: "sqm",
-    features: [
-      "Twenty-four units across six floors",
-      "Private balcony to every unit",
-      "Passenger lift and firefighting riser",
-      "Dedicated utility terrace per apartment",
-      "Shared generator and inverter room",
-      "Secure basement and surface parking",
-      "On-site estate office",
+    "id": "wemabod-02",
+    "reference": "WEM-002",
+    "slug": "wemabod-detached-bungalow",
+    "title": "3-bedroom detached bungalow",
+    "location": {
+      "city": "",
+      "state": "",
+      "address": "Wemabod Housing Estate"
+    },
+    "type": "residential",
+    "status": "available",
+    "shortDescription": "A three-bedroom detached bungalow, available in the estate extension only.",
+    "description": "A three-bedroom detached bungalow, available in the estate extension only.\n\nPrices effective 1 July 2026. Excludes taxes, legal and estate infrastructure fees. Confirm current availability and payment terms with Sekibat. Applicable legal fees are payable when requesting title documents.\n\nContact Sekibat for the exact estate address, an inspection and the specification of the available unit.",
+    "price": 75000000,
+    "currency": "NGN",
+    "priceNote": "Prices effective 1 July 2026. Excludes taxes, legal and estate infrastructure fees. Confirm current availability and payment terms with Sekibat.",
+    "features": [
+      "Estate extension only",
+      "Flexible payment — enquire for terms",
+      "24/7 security",
+      "Ample parking"
     ],
-    images: [
-      "/media/properties/oakview-residences-01.jpg",
-      "/media/properties/oakview-residences-02.jpg",
-      "/media/properties/oakview-residences-03.jpg",
+    "images": [
+      "/media/properties/wemabod/detached-bungalow-pending.png"
     ],
-    featured: true,
-    listedAt: "2026-06-02",
+    "featured": true,
+    "listedAt": "2026-07-01",
+    "bedrooms": 3
   },
   {
-    id: "p-0003",
-    reference: "PROP-000125",
-    slug: "victoria-commercial-centre",
-    title: "Victoria Commercial Centre",
-    location: { city: "Victoria Island", state: "Lagos", address: "Akin Adesola Street" },
-    type: "commercial",
-    status: "completed",
-    ownership: "client",
-    shortDescription:
-      "A completed commercial building on Akin Adesola, delivered and let on behalf of its owner.",
-    description:
-      "Victoria Commercial Centre is a completed office building on Akin Adesola Street, delivered by Sekibat on behalf of its owner and now fully let. The building offers whole-floor and part-floor suites above a double-height reception, with tenant parking at ground and basement level.\n\nSekibat ran the delivery programme and continues to provide estate management and planned maintenance under a standing instruction from the owner.",
-    price: 1_200_000_000,
-    currency: "NGN",
-    size: 1840,
-    sizeUnit: "sqm",
-    features: [
-      "Double-height reception",
-      "Whole-floor and part-floor suites",
-      "Two passenger lifts and a service lift",
-      "Full building generator with changeover",
-      "Central water treatment",
-      "Basement and surface parking",
-      "24-hour manned security",
+    "id": "wemabod-03",
+    "reference": "WEM-003",
+    "slug": "wemabod-semi-detached-bungalow",
+    "title": "3-bedroom semi-detached bungalow",
+    "location": {
+      "city": "",
+      "state": "",
+      "address": "Wemabod Housing Estate"
+    },
+    "type": "residential",
+    "status": "available",
+    "shortDescription": "A three-bedroom semi-detached bungalow at Wemabod Housing Estate.",
+    "description": "A three-bedroom semi-detached bungalow at Wemabod Housing Estate.\n\nPrices effective 1 July 2026. Excludes taxes, legal and estate infrastructure fees. Confirm current availability and payment terms with Sekibat. Applicable legal fees are payable when requesting title documents.\n\nContact Sekibat for the exact estate address, an inspection and the specification of the available unit.",
+    "price": 68000000,
+    "currency": "NGN",
+    "priceNote": "Prices effective 1 July 2026. Excludes taxes, legal and estate infrastructure fees. Confirm current availability and payment terms with Sekibat.",
+    "features": [
+      "Flexible payment — enquire for terms",
+      "24/7 security",
+      "Ample parking"
     ],
-    images: [
-      "/media/properties/victoria-commercial-centre-01.jpg",
-      "/media/properties/victoria-commercial-centre-02.jpg",
-      "/media/properties/victoria-commercial-centre-03.jpg",
+    "images": [
+      "/media/properties/wemabod/semi-detached-bungalow-pending.png"
     ],
-    featured: true,
-    listedAt: "2026-03-19",
+    "featured": true,
+    "listedAt": "2026-07-01",
+    "bedrooms": 3
   },
   {
-    id: "p-0004",
-    reference: "PROP-000126",
-    slug: "emerald-court",
-    title: "Emerald Court",
-    location: { city: "Gwarinpa", state: "Abuja", address: "3rd Avenue, Gwarinpa Estate" },
-    type: "residential",
-    status: "available",
-    ownership: "sekibat",
-    shortDescription:
-      "Three-bedroom apartments in Gwarinpa with a shared courtyard and estate office.",
-    description:
-      "Emerald Court is a low-rise block of three-bedroom apartments on 3rd Avenue in Gwarinpa. Units are laid out with living and dining space to the front, bedrooms to the rear, and a covered balcony facing the shared courtyard.\n\nThe building is owned by Sekibat and managed by our Abuja estate team, who hold the maintenance schedule and service charge accounts for the block.",
-    price: 164_000_000,
-    currency: "NGN",
-    bedrooms: 3,
-    bathrooms: 3,
-    size: 185,
-    sizeUnit: "sqm",
-    features: [
-      "Shared landscaped courtyard",
-      "Covered balcony to every unit",
-      "Fitted kitchen",
-      "Borehole and overhead storage",
-      "On-site estate office",
-      "Allocated parking",
-      "Perimeter fencing and gatehouse",
+    "id": "wemabod-04",
+    "reference": "WEM-004",
+    "slug": "wemabod-duplex-flat",
+    "title": "3-bedroom duplex flat",
+    "location": {
+      "city": "",
+      "state": "",
+      "address": "Wemabod Housing Estate"
+    },
+    "type": "residential",
+    "status": "available",
+    "shortDescription": "A three-bedroom duplex flat in a multi-dwelling unit (MDU) at Wemabod Housing Estate.",
+    "description": "A three-bedroom duplex flat in a multi-dwelling unit (MDU) at Wemabod Housing Estate.\n\nPrices effective 1 July 2026. Excludes taxes, legal and estate infrastructure fees. Confirm current availability and payment terms with Sekibat. Applicable legal fees are payable when requesting title documents.\n\nContact Sekibat for the exact estate address, an inspection and the specification of the available unit.",
+    "price": 63000000,
+    "currency": "NGN",
+    "priceNote": "Prices effective 1 July 2026. Excludes taxes, legal and estate infrastructure fees. Confirm current availability and payment terms with Sekibat.",
+    "features": [
+      "Flexible payment — enquire for terms",
+      "24/7 security",
+      "Ample parking"
     ],
-    images: [
-      "/media/properties/emerald-court-01.jpg",
-      "/media/properties/emerald-court-02.jpg",
-      "/media/properties/emerald-court-03.jpg",
+    "images": [
+      "/media/properties/wemabod/duplex-flat-pending.png"
     ],
-    featured: true,
-    listedAt: "2026-05-28",
+    "featured": true,
+    "listedAt": "2026-07-01",
+    "bedrooms": 3
   },
   {
-    id: "p-0005",
-    reference: "PROP-000127",
-    slug: "horizon-villas",
-    title: "Horizon Villas",
-    location: { city: "Ajah", state: "Lagos", address: "Off Lekki-Epe Expressway" },
-    type: "residential",
-    status: "sold",
-    ownership: "sekibat",
-    shortDescription: "A terrace of five-bedroom villas at Ajah. All units sold.",
-    description:
-      "Horizon Villas is a terrace of five-bedroom detached homes off the Lekki-Epe Expressway at Ajah, developed and sold by Sekibat. Each villa has a private compound, a separate domestic block and a double carport.\n\nAll units in this development have been sold. The record is retained here for reference; enquiries about comparable homes are welcome.",
-    price: 410_000_000,
-    currency: "NGN",
-    bedrooms: 5,
-    bathrooms: 5,
-    size: 480,
-    sizeUnit: "sqm",
-    features: [
-      "Private compound to each villa",
-      "Separate domestic block",
-      "Double carport",
-      "All bedrooms en-suite",
-      "Family lounge to first floor",
-      "Borehole and treatment plant",
+    "id": "wemabod-05",
+    "reference": "WEM-005",
+    "slug": "wemabod-two-bedroom-flat",
+    "title": "2-bedroom flat",
+    "location": {
+      "city": "",
+      "state": "",
+      "address": "Wemabod Housing Estate"
+    },
+    "type": "residential",
+    "status": "available",
+    "shortDescription": "Two-bedroom flats in multi-dwelling units (MDU), with up and down options.",
+    "description": "Two-bedroom flats in multi-dwelling units (MDU), with up and down options.\n\nPrices effective 1 July 2026. Excludes taxes, legal and estate infrastructure fees. Confirm current availability and payment terms with Sekibat. Applicable legal fees are payable when requesting title documents.\n\nContact Sekibat for the exact estate address, an inspection and the specification of the available unit.",
+    "price": 45000000,
+    "currency": "NGN",
+    "priceNote": "Prices effective 1 July 2026. Excludes taxes, legal and estate infrastructure fees. Confirm current availability and payment terms with Sekibat.",
+    "features": [
+      "Flexible payment — enquire for terms",
+      "24/7 security",
+      "Ample parking"
     ],
-    images: [
-      "/media/properties/horizon-villas-01.jpg",
-      "/media/properties/horizon-villas-02.jpg",
-      "/media/properties/horizon-villas-03.jpg",
+    "images": [
+      "/media/properties/wemabod/two-bedroom-flat-pending.png"
     ],
-    featured: false,
-    listedAt: "2025-11-06",
+    "featured": true,
+    "listedAt": "2026-07-01",
+    "bedrooms": 2
   },
   {
-    id: "p-0006",
-    reference: "PROP-000128",
-    slug: "ikoyi-garden-plaza",
-    title: "Ikoyi Garden Plaza",
-    location: { city: "Ikoyi", state: "Lagos", address: "Awolowo Road" },
-    type: "mixed-use",
-    status: "under-development",
-    ownership: "client",
-    shortDescription:
-      "A mixed-use scheme on Awolowo Road: retail at grade, offices and apartments above.",
-    description:
-      "Ikoyi Garden Plaza is a mixed-use scheme on Awolowo Road, developed for a private client. Retail units occupy the ground and mezzanine levels, with office floors above and serviced apartments at the top of the building around a planted terrace.\n\nSekibat is appointed as development and project manager. The frame is complete and cladding is in progress. Commercial terms for the retail and office floors are held by the owner.",
-    size: 4200,
-    sizeUnit: "sqm",
-    features: [
-      "Retail at ground and mezzanine",
-      "Four office floors",
-      "Serviced apartments to upper levels",
-      "Planted communal terrace",
-      "Two-level basement parking",
-      "Centralised plant and water treatment",
+    "id": "wemabod-06",
+    "reference": "WEM-006",
+    "slug": "wemabod-one-bedroom-home",
+    "title": "1-bedroom + sitting room",
+    "location": {
+      "city": "",
+      "state": "",
+      "address": "Wemabod Housing Estate"
+    },
+    "type": "residential",
+    "status": "available",
+    "shortDescription": "A self-contained one-bedroom home with a sitting room. Studio apartment.",
+    "description": "A self-contained one-bedroom home with a sitting room. Studio apartment.\n\nPrices effective 1 July 2026. Excludes taxes, legal and estate infrastructure fees. Confirm current availability and payment terms with Sekibat. Applicable legal fees are payable when requesting title documents.\n\nContact Sekibat for the exact estate address, an inspection and the specification of the available unit.",
+    "price": 30000000,
+    "currency": "NGN",
+    "priceNote": "Prices effective 1 July 2026. Excludes taxes, legal and estate infrastructure fees. Confirm current availability and payment terms with Sekibat.",
+    "features": [
+      "Flexible payment — enquire for terms",
+      "24/7 security",
+      "Ample parking"
     ],
-    images: [
-      "/media/properties/ikoyi-garden-plaza-01.jpg",
-      "/media/properties/ikoyi-garden-plaza-02.jpg",
-      "/media/properties/ikoyi-garden-plaza-03.jpg",
+    "images": [
+      "/media/properties/wemabod/one-bedroom-home-pending.png"
     ],
-    featured: false,
-    listedAt: "2026-04-11",
+    "featured": true,
+    "listedAt": "2026-07-01",
+    "bedrooms": 1
   },
   {
-    id: "p-0007",
-    reference: "PROP-000129",
-    slug: "epe-lakeview-land",
-    title: "Epe Lakeview Land",
-    location: { city: "Epe", state: "Lagos", address: "Poka, Epe" },
-    type: "land",
-    status: "available",
-    ownership: "sekibat",
-    shortDescription: "Surveyed and fenced plots at Poka, Epe, with access roads set out.",
-    description:
-      "A parcel of surveyed land at Poka, Epe, held by Sekibat and released in plots. Access roads have been set out and the perimeter is fenced. Each plot is sold with a survey plan and a deed of assignment.\n\nPlots are suitable for residential development. Title documentation is available for inspection at our office by appointment.",
-    price: 48_000_000,
-    currency: "NGN",
-    size: 4000,
-    sizeUnit: "sqm",
-    features: [
-      "Surveyed and beaconed plots",
-      "Access roads set out",
-      "Perimeter fencing",
-      "Survey plan and deed of assignment",
-      "Title documentation available for inspection",
+    "id": "wemabod-07",
+    "reference": "WEM-007",
+    "slug": "wemabod-half-plot",
+    "title": "Half plot of land",
+    "location": {
+      "city": "",
+      "state": "",
+      "address": "Wemabod Housing Estate"
+    },
+    "type": "land",
+    "status": "available",
+    "shortDescription": "A half plot of land, available in the estate extension only.",
+    "description": "A half plot of land, available in the estate extension only.\n\nPrices effective 1 July 2026. Excludes taxes, legal and estate infrastructure fees. Confirm current availability and payment terms with Sekibat. Applicable legal fees are payable when requesting title documents.\n\nContact Sekibat for the exact estate address, an inspection and the specification of the available unit. Plot dimensions and area are available on enquiry.",
+    "price": 30000000,
+    "currency": "NGN",
+    "priceNote": "Prices effective 1 July 2026. Excludes taxes, legal and estate infrastructure fees. Confirm current availability and payment terms with Sekibat.",
+    "features": [
+      "Estate extension only",
+      "Half-plot allocation",
+      "Confirm dimensions and title documents with Sekibat"
     ],
-    images: [
-      "/media/properties/epe-lakeview-land-01.jpg",
-      "/media/properties/epe-lakeview-land-02.jpg",
-      "/media/properties/epe-lakeview-land-03.jpg",
+    "images": [
+      "/media/properties/wemabod/half-plot-pending.png"
     ],
-    featured: false,
-    listedAt: "2026-08-01",
-  },
-  {
-    id: "p-0008",
-    reference: "PROP-000130",
-    slug: "maitama-office-suites",
-    title: "Maitama Office Suites",
-    location: { city: "Maitama", state: "Abuja", address: "Gana Street, Maitama" },
-    type: "commercial",
-    status: "leased",
-    ownership: "client",
-    shortDescription: "Let office suites on Gana Street, held under a management instruction.",
-    description:
-      "A building of individually let office suites on Gana Street, Maitama, held on behalf of its owner. The suites are fully let on standing leases; Sekibat collects rent, manages the service charge and holds the planned maintenance schedule.\n\nThe record is published for reference. Enquiries regarding availability should be directed to our Abuja office.",
-    size: 620,
-    sizeUnit: "sqm",
-    features: [
-      "Individually let suites",
-      "Shared reception and meeting room",
-      "Building generator with changeover",
-      "Managed service charge",
-      "Planned maintenance schedule",
-      "Allocated parking",
-    ],
-    images: [
-      "/media/properties/maitama-office-suites-01.jpg",
-      "/media/properties/maitama-office-suites-02.jpg",
-      "/media/properties/maitama-office-suites-03.jpg",
-    ],
-    featured: false,
-    listedAt: "2026-01-23",
-  },
+    "featured": false,
+    "listedAt": "2026-07-01"
+  }
 ];

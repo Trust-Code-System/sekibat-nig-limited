@@ -46,7 +46,7 @@ export function Hero({ company }: { company: Company }) {
             </ImageFrame>
             <figcaption className="label mt-4 flex justify-between gap-4">
               <span>Residential &amp; commercial</span>
-              <span>Lagos &amp; Abuja</span>
+              <span>Lagos, Abuja &amp; Ekiti</span>
             </figcaption>
           </figure>
         </div>

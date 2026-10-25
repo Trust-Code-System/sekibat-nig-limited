@@ -6,7 +6,7 @@ import { DEFAULT_PER_PAGE, type Paged, type ProjectQuery, type ProjectSortKey } 
 
 /** Project repository. Mirrors the property repository contract exactly. */
 
-const STATUS_RANK: Record<Project["status"], number> = {
+const STATUS_RANK: Record<NonNullable<Project["status"]>, number> = {
   ongoing: 0,
   completed: 1,
   planned: 2,
@@ -25,7 +25,7 @@ function matches(p: Project, q: ProjectQuery): boolean {
       .toLowerCase();
     if (!haystack.includes(needle)) return false;
   }
-  if (q.status?.length && !q.status.includes(p.status)) return false;
+  if (q.status?.length && (!p.status || !q.status.includes(p.status))) return false;
   if (q.service && !p.services.includes(q.service)) return false;
   if (q.featured !== undefined && p.featured !== q.featured) return false;
   return true;
@@ -40,9 +40,9 @@ function compare(a: Project, b: Project, sort: ProjectSortKey): number {
     case "featured":
     default:
       if (a.featured !== b.featured) return a.featured ? -1 : 1;
-      if (STATUS_RANK[a.status] !== STATUS_RANK[b.status]) {
-        return STATUS_RANK[a.status] - STATUS_RANK[b.status];
-      }
+      const aRank = a.status ? STATUS_RANK[a.status] : 3;
+      const bRank = b.status ? STATUS_RANK[b.status] : 3;
+      if (aRank !== bRank) return aRank - bRank;
       return recencyKey(b).localeCompare(recencyKey(a));
   }
 }

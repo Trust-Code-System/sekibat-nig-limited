@@ -117,8 +117,8 @@ export function propertyJsonLd(property: Property): Record<string, unknown> {
     address: {
       "@type": "PostalAddress",
       streetAddress: property.location.address,
-      addressLocality: property.location.city,
-      addressRegion: property.location.state,
+      addressLocality: property.location.city || undefined,
+      addressRegion: property.location.state || undefined,
       addressCountry: "NG",
     },
     ...(property.size
@@ -156,7 +156,7 @@ export function projectJsonLd(project: Project): Record<string, unknown> {
     image: project.images.map((src) => absoluteUrl(src)),
     identifier: project.reference,
     creator: { "@id": ORG_ID },
-    locationCreated: { "@type": "Place", name: project.location },
+    ...(project.location ? { locationCreated: { "@type": "Place", name: project.location } } : {}),
     ...(project.completionDate ? { dateCreated: project.completionDate } : {}),
   };
 }
@@ -191,5 +191,5 @@ export function breadcrumbJsonLd(
 
 /** Title pattern shared by property metadata and the browser tab. */
 export function propertyMetaTitle(property: Property): string {
-  return `${property.title}, ${property.location.city} · ${PROPERTY_TYPE_LABEL[property.type]}, ${PROPERTY_STATUS_LABEL[property.status]}`;
+  return `${property.title}${property.location.city ? `, ${property.location.city}` : ""} · ${PROPERTY_TYPE_LABEL[property.type]}, ${PROPERTY_STATUS_LABEL[property.status]}`;
 }

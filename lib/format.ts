@@ -3,6 +3,7 @@ import type {
   ProjectStatus,
   PropertyStatus,
   PropertyType,
+  PropertyLocation,
 } from "@/types";
 
 /**
@@ -109,4 +110,8 @@ export function specLine(p: {
 export function plateIndex(index: number, total: number): string {
   const pad = (n: number) => String(n).padStart(2, "0");
   return `${pad(index + 1)} / ${pad(total)}`;
+}
+
+export function formatPropertyLocation(location: PropertyLocation): string {
+  return [location.city, location.state].filter(Boolean).join(", ") || location.address || "Location on request";
 }

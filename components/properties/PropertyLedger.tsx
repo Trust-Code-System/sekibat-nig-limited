@@ -2,6 +2,7 @@ import Link from "next/link";
 import { cn } from "@/lib/cn";
 import {
   formatNairaCompact,
+  formatPropertyLocation,
   OWNERSHIP_LABEL,
   PROPERTY_STATUS_LABEL,
   PROPERTY_TYPE_LABEL,
@@ -55,13 +56,13 @@ export function PropertyLedger({ properties }: { properties: Property[] }) {
                   </Link>
                 </Td>
                 <Td className="text-sm text-ink-muted">
-                  {property.location.city}, {property.location.state}
+                  {formatPropertyLocation(property.location)}
                 </Td>
                 <Td className="text-sm text-ink-muted">
                   {PROPERTY_TYPE_LABEL[property.type]}
                 </Td>
                 <Td className="text-sm text-ink-muted">
-                  {OWNERSHIP_LABEL[property.ownership]}
+                  {property.ownership ? OWNERSHIP_LABEL[property.ownership] : "On enquiry"}
                 </Td>
                 <Td>
                   <span
@@ -79,6 +80,7 @@ export function PropertyLedger({ properties }: { properties: Property[] }) {
                   ) : (
                     <span className="text-ink-faint">On request</span>
                   )}
+                  {property.priceNote && <p className="mt-2 max-w-64 font-sans text-xs leading-relaxed text-ink-muted">{property.priceNote}</p>}
                 </Td>
               </tr>
             );

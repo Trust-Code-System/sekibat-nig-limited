@@ -16,7 +16,7 @@ export const company: Company = {
   positioning: "Property, from the ground up.",
 
   ownedSide:
-    "We develop and own residential and commercial property across Lagos and Abuja, acquiring the site, building it, and holding it afterwards.",
+    "We develop and own residential and commercial property across Lagos, Abuja and Ekiti, acquiring the site, building it, and holding it afterwards.",
   clientSide:
     "We also work on property we do not own: developing, selling, maintaining and managing buildings and estates on behalf of the people who do.",
 
@@ -43,14 +43,12 @@ export const company: Company = {
   ],
 
   contact: {
-    // TODO: client — replace with real registered address.
-    addressLines: ["Address to be confirmed", "Lagos", "Nigeria"],
-    // TODO: client — replace with real switchboard number.
-    phone: "+234 000 000 0000",
-    // TODO: client — replace with real enquiries address.
-    email: "enquiries@sekibat.com",
+    // Phone and email supplied on the Wemabod brochure; office address still pending.
+    addressLines: ["Office address available on enquiry", "Nigeria"],
+    phone: "+234 803 402 1426",
+    email: "nsekibat@gmail.com",
     hours: "Monday to Friday, 9:00 – 17:00 WAT",
-    isPlaceholder: true,
+    isPlaceholder: false,
   },
 
   // TODO: client — replace hrefs when the accounts are confirmed.

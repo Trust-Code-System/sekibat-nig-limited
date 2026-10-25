@@ -31,6 +31,10 @@ export const label = (key: string) =>
   names[key] ||
   key.replace(/([A-Z])/g, " $1").replace(/^./, (char) => char.toUpperCase());
 const optional = new Set([
+  "ownership",
+  "status",
+  "location",
+  "priceNote",
   "address",
   "price",
   "bedrooms",
@@ -146,6 +150,8 @@ export function editData(entry: Entry): Content {
   if (entry.collection === "properties")
     return {
       ...entry.draft,
+      ownership: entry.draft.ownership ?? "",
+      priceNote: entry.draft.priceNote ?? "",
       price: entry.draft.price ?? "",
       bedrooms: entry.draft.bedrooms ?? "",
       bathrooms: entry.draft.bathrooms ?? "",
@@ -158,6 +164,9 @@ export function editData(entry: Entry): Content {
   if (entry.collection === "projects")
     return {
       ...entry.draft,
+      location: entry.draft.location ?? "",
+      status: entry.draft.status ?? "",
+      propertySlugs: entry.draft.propertySlugs ?? [],
       client: entry.draft.client ?? "",
       completionDate: entry.draft.completionDate ?? "",
       brief: entry.draft.brief ?? "",

@@ -3,6 +3,7 @@ import { HomeCta } from "@/components/home/HomeCta";
 import { HomeProperties } from "@/components/home/HomeProperties";
 import { HomeStory } from "@/components/home/HomeStory";
 import { getCompany, getProperties } from "@/lib/api";
+import { formatPropertyLocation } from "@/lib/format";
 import { getHomepage } from "@/lib/api/cms-store";
 
 export default async function HomePage() {
@@ -12,9 +13,11 @@ export default async function HomePage() {
     getHomepage(),
   ]);
 
+  const featured = propertyPage.items[0];
+
   return (
     <div className="overflow-x-clip bg-ivory">
-      <CinematicHero featured={propertyPage.items[0]} content={content} />
+      <CinematicHero featured={featured} content={content} featuredLocation={featured ? formatPropertyLocation(featured.location) : ""} />
       <HomeProperties properties={propertyPage.items} />
       <HomeStory company={company} image={content.storyImage} />
       <HomeCta content={content} />

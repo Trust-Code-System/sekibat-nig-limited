@@ -20,7 +20,7 @@ import { buildMetadata } from "@/lib/seo";
 export const metadata: Metadata = buildMetadata({
   title: "Properties",
   description:
-    "Residential, commercial, mixed-use and land across Lagos and Abuja: developments owned by Sekibat and property held on behalf of clients.",
+    "Residential, commercial, mixed-use and land across Lagos, Abuja and Ekiti: developments owned by Sekibat and property held on behalf of clients.",
   path: "/properties",
 });
 
@@ -44,7 +44,7 @@ export default async function PropertiesPage({
             Every property on <span className="accent-serif">record.</span>
           </>
         }
-        intro="Developments Sekibat owns outright, and property we hold, market or manage for clients. Each record carries the same reference used inside our management system."
+        intro="Explore homes and land at Wemabod Housing Estate. Browse prices, compare bedrooms and enquire directly with Sekibat about availability, the estate address and an inspection."
       />
 
       <Container className="pb-8">
