@@ -6,7 +6,7 @@ import { EDITORIAL, SIZES } from "@/lib/images";
 import type { Company } from "@/types";
 
 const PILLARS = [
-  { label: "Where we work", value: "Lagos & Abuja" },
+  { label: "Where we work", value: "Lagos, Abuja & Ekiti" },
   { label: "What we hold", value: "Our portfolio, and clients'" },
   { label: "How far we stay", value: "Develop, sell, manage" },
 ] as const;

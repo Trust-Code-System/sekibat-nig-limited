@@ -19,6 +19,7 @@ import { StudioSelect, StudioDatePicker } from "./StudioControls";
 const numbers = new Set(["price", "bedrooms", "bathrooms", "size", "order"]);
 const dates = new Set(["listedAt", "completionDate"]);
 const longText = new Set([
+  "priceNote",
   "description",
   "shortDescription",
   "summary",
@@ -327,13 +328,17 @@ export function ContentEditor({
             {choices ? (
               <StudioSelect
                 id={fieldId}
-                value={String(value)}
+                value={String(value || "unspecified")}
                 disabled={pending || remote}
-                onValueChange={(next) => update(keys, next)}
-                options={choices.map((choice) => ({
-                  value: choice,
-                  label: label(choice.replaceAll("-", " ")),
-                }))}
+                onValueChange={(next) => update(keys, next === "unspecified" ? "" : next)}
+                options={[
+                  ...((key === "ownership" || (key === "status" && entry.collection === "projects"))
+                    ? [{ value: "unspecified", label: "Not specified" }] : []),
+                  ...choices.map((choice) => ({
+                    value: choice,
+                    label: label(choice.replaceAll("-", " ")),
+                  })),
+                ]}
               />
             ) : dates.has(key) ? (
               <StudioDatePicker
@@ -423,6 +428,8 @@ export function ContentEditor({
         "status",
         "ownership",
         "price",
+        "priceNote",
+        "propertySlugs",
         "bedrooms",
         "bathrooms",
         "size",

@@ -27,7 +27,8 @@ export interface Property {
 
   type: PropertyType;
   status: PropertyStatus;
-  ownership: Ownership;
+  /** Omitted until legal ownership is confirmed. */
+  ownership?: Ownership;
 
   shortDescription: string;
   description: string;
@@ -35,6 +36,8 @@ export interface Property {
   /** Omitted entirely when the price is not public — never render 0. */
   price?: number;
   currency?: "NGN";
+  /** Pricing date, exclusions and availability conditions supplied by the seller. */
+  priceNote?: string;
 
   bedrooms?: number;
   bathrooms?: number;

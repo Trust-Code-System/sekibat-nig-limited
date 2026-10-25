@@ -113,11 +113,18 @@ await page.getByText("Nothing matches those filters.").waitFor();
 await page.getByRole("link", { name: /Epe.*Remove filter/ }).waitFor();
 await page.getByRole("link", { name: /Commercial.*Remove filter/ }).waitFor();
 
-await visit("/properties/sekibat-heights");
+const propertyPath = sitemapPaths.find((path) => path.startsWith("/properties/"));
+if (!propertyPath) throw new Error("Sitemap contains no property detail pages");
+await visit(propertyPath);
 await page.getByRole("button", { name: "Enlarge" }).click();
 await page.getByRole("dialog").waitFor();
-await page.keyboard.press("ArrowRight");
-await page.getByText("02 / 04", { exact: true }).waitFor();
+const thumbnails = await page.getByRole("button", { name: /^Show image/ }).count();
+if (thumbnails > 1) {
+  await page.keyboard.press("ArrowRight");
+  await page.getByText(`02 / ${String(thumbnails).padStart(2, "0")}`, { exact: true }).waitFor();
+} else if (!(await page.getByRole("button", { name: "Next →", exact: true }).isDisabled())) {
+  throw new Error("Single-image gallery should disable next navigation");
+}
 await page.getByRole("button", { name: "Close" }).click();
 
 await visit("/contact");

@@ -24,7 +24,7 @@ export function ProjectCard({
         <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-ivory-deep">
           <SmartImage
             src={project.images[0]}
-            alt={`${project.title}, ${project.location}`}
+            alt={[project.title, project.location].filter(Boolean).join(", ")}
             sizes={SIZES.cardWide}
             priority={priority}
             className="transition-transform duration-700 ease-(--ease-editorial) group-hover:scale-[1.05]"
@@ -33,7 +33,7 @@ export function ProjectCard({
 
         <div className="flex flex-1 flex-col px-3 pt-5 pb-3">
           <p className="text-[0.625rem] font-medium tracking-[0.16em] text-ink-faint uppercase">
-            {PROJECT_STATUS_LABEL[project.status]}
+            {project.status ? PROJECT_STATUS_LABEL[project.status] : project.projectType}
             {project.completionDate && ` · ${formatDate(project.completionDate)}`}
           </p>
           <h3 className="mt-2 text-lg font-semibold tracking-[-0.02em] text-ink">{project.title}</h3>
@@ -41,17 +41,13 @@ export function ProjectCard({
             <span className="text-lime-deep" aria-hidden>
               ▸
             </span>
-            {project.location}
-            <span aria-hidden className="text-rule">
-              ·
-            </span>
-            {project.projectType}
+            {project.location || "Homes and land"}
           </p>
           <p className="mt-3 max-w-[46ch] text-sm text-ink-muted">{project.shortDescription}</p>
 
           <div className="mt-auto flex items-center justify-between gap-4 border-t border-rule pt-4">
             <p className="text-sm text-ink-muted">
-              {project.client ? `Client: ${project.client}` : "Sekibat-owned development"}
+              {project.client ? `Client: ${project.client}` : "Explore the project"}
             </p>
             <span className="cine-arrow-btn cine-arrow-btn-sm shrink-0" aria-hidden>
               <ArrowIcon />

@@ -12,8 +12,8 @@ import { schemas, type Collection, type Content, type Entry, type HomeContent } 
 const directory = path.resolve(/* turbopackIgnore: true */ process.env.SEKIBAT_CMS_DIR || path.join(process.cwd(), ".cms"));
 const filename = path.join(directory, "content.json");
 const homepage: HomeContent = {
-  eyebrow: "Innovative living", heading: "Elevate your space with", headingAccent: "smart design.",
-  introduction: "Discover modern living spaces reimagined through architecture we build, own and look after across Lagos and Abuja.",
+  eyebrow: "Wemabod Housing Estate", heading: "Build your tomorrow,", headingAccent: "today.",
+  introduction: "Explore homes and land at Wemabod Housing Estate. Find your next home with Sekibat Nig Limited.",
   heroImage: "/media/properties/sekibat-heights-01.jpg", storyImage: "/media/editorial/home-hero.jpg", ctaImage: "/media/properties/ikoyi-garden-plaza-01.jpg",
   ctaHeading: "Explore the future of", ctaAccent: "real estate", ctaBody: "Tell us about the property, the site, or the building you already hold. We will start from there.", ctaLabel: "Get started",
 };

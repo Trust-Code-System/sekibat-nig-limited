@@ -7,13 +7,15 @@ export interface Project {
   slug: string;
 
   title: string;
-  location: string;
+  /** Omitted until the project location is confirmed. */
+  location?: string;
   projectType: string;
 
-  /** Absent when the project is a Sekibat-owned development. */
+  /** Client name, when supplied. Absence does not establish ownership. */
   client?: string;
 
-  status: ProjectStatus;
+  /** Omitted until the construction status is confirmed. */
+  status?: ProjectStatus;
   /** ISO date, or undefined while the project is planned/ongoing. */
   completionDate?: string;
 
@@ -28,6 +30,9 @@ export interface Project {
   role?: string;
   work?: string[];
   outcome?: string;
+
+  /** Explicit links to sale listings belonging to this project. */
+  propertySlugs?: string[];
 
   images: string[];
   featured: boolean;

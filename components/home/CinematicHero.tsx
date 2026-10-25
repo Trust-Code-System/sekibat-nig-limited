@@ -18,7 +18,7 @@ import type { Property } from "@/types";
  * and it reverses naturally when the user scrolls back up. Without JS, `--p` stays 0 and
  * the scene degrades to a static hero followed by the properties section.
  */
-export function CinematicHero({ featured, content }: { featured?: Property; content: HomeContent }) {
+export function CinematicHero({ featured, content, featuredLocation }: { featured?: Property; content: HomeContent; featuredLocation: string }) {
   const trackRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export function CinematicHero({ featured, content }: { featured?: Property; cont
           <div className="cine-media-zoom absolute inset-0">
             <SmartImage
               src={content.heroImage}
-              alt="A Sekibat residential house at dusk, interior lights glowing"
+              alt="Illustrative residential architecture"
               sizes={SIZES.full}
               priority
             />
@@ -77,6 +77,8 @@ export function CinematicHero({ featured, content }: { featured?: Property; cont
           aria-hidden
           className="cine-shade absolute inset-0 bg-linear-to-t from-onyx/70 via-onyx/15 to-onyx/20"
         />
+
+        <p className="absolute top-28 right-6 z-10 rounded-full bg-onyx/70 px-3 py-2 text-xs text-ivory md:right-12">Illustrative image · estate photography to follow</p>
 
         <div className="cine-hero-copy pointer-events-none absolute inset-0 flex flex-col justify-end">
           <div className="mx-auto w-full max-w-(--container-site) px-6 pb-28 md:px-12 md:pb-24">
@@ -104,7 +106,7 @@ export function CinematicHero({ featured, content }: { featured?: Property; cont
                   {featured.title}
                 </span>
                 <span className="mt-0.5 block truncate text-xs text-ivory/60">
-                  {featured.location.city}, {featured.location.state}
+                  {featuredLocation}
                 </span>
               </span>
               <span className="cine-arrow-btn cine-arrow-btn-sm shrink-0">

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowIcon } from "@/components/home/icons";
 import { SmartImage } from "@/components/media/SmartImage";
-import { formatNaira, formatSize, PROPERTY_TYPE_LABEL } from "@/lib/format";
+import { formatPropertyLocation, formatNaira, formatSize, PROPERTY_TYPE_LABEL } from "@/lib/format";
 import { propertyImageAlt, SIZES } from "@/lib/images";
 import type { Property } from "@/types";
 
@@ -29,7 +29,7 @@ export function HomePropertyCard({
         <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-ivory-deep">
           <SmartImage
             src={property.images[0]}
-            alt={propertyImageAlt(property.title, property.location.city, 0)}
+            alt={propertyImageAlt(property.title, formatPropertyLocation(property.location), 0)}
             sizes={SIZES.card}
             priority={priority}
             className="transition-transform duration-700 ease-(--ease-editorial) group-hover:scale-[1.04]"
@@ -37,7 +37,7 @@ export function HomePropertyCard({
         </div>
 
         <div className="flex flex-1 flex-col px-3 pt-5 pb-3">
-          <div className="flex items-baseline justify-between gap-4">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h3 className="text-md font-semibold tracking-[-0.01em] text-ink">
               {property.title}
             </h3>
@@ -48,8 +48,10 @@ export function HomePropertyCard({
 
           <p className="mt-2 flex items-center gap-1.5 text-sm text-ink-muted">
             <PinIcon />
-            {property.location.city}, {property.location.state}
+            {formatPropertyLocation(property.location)}
           </p>
+
+          {property.priceNote && <p className="my-3 text-xs leading-relaxed text-ink-muted">{property.priceNote}</p>}
 
           <div className="mt-auto flex items-center justify-between gap-4 border-t border-rule pt-4">
 

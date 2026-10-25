@@ -9,6 +9,7 @@ import { Container, Display, Eyebrow, Prose, Section } from "@/components/ui/pri
 import { getPropertyBySlug, getPropertySlugs, getRelatedProperties } from "@/lib/api";
 import {
   formatNaira,
+  formatPropertyLocation,
   formatSize,
   OWNERSHIP_LABEL,
   PROPERTY_STATUS_LABEL,
@@ -42,7 +43,7 @@ export async function generateMetadata({
     description: property.shortDescription,
     path: `/properties/${property.slug}`,
     image: property.images[0],
-    imageAlt: propertyImageAlt(property.title, property.location.city, 0),
+    imageAlt: propertyImageAlt(property.title, formatPropertyLocation(property.location), 0),
   });
 }
 
@@ -62,7 +63,7 @@ export default async function PropertyPage({
     { label: "Reference", value: property.reference },
     { label: "Type", value: PROPERTY_TYPE_LABEL[property.type] },
     { label: "Status", value: PROPERTY_STATUS_LABEL[property.status] },
-    { label: "Ownership", value: OWNERSHIP_LABEL[property.ownership] },
+    ...(property.ownership ? [{ label: "Ownership", value: OWNERSHIP_LABEL[property.ownership] }] : []),
   ];
   if (property.bedrooms) facts.push({ label: "Bedrooms", value: String(property.bedrooms) });
   if (property.bathrooms) facts.push({ label: "Bathrooms", value: String(property.bathrooms) });
@@ -75,7 +76,7 @@ export default async function PropertyPage({
     <>
       <PageHeader
         tone="dark"
-        eyebrow={`${property.location.city}, ${property.location.state}`}
+        eyebrow={formatPropertyLocation(property.location)}
         title={property.title}
         breadcrumb={[
           { label: "Home", href: "/" },
@@ -93,6 +94,7 @@ export default async function PropertyPage({
             >
               {formatNaira(property.price)}
             </p>
+            {property.priceNote && <p className="mt-3 max-w-md text-sm leading-relaxed text-ivory/70">{property.priceNote}</p>}
             <p
               className={cn(
                 "mt-3 text-[0.625rem] font-medium tracking-[0.16em] uppercase",
@@ -112,7 +114,7 @@ export default async function PropertyPage({
               images={property.images}
               title={property.title}
               alt={property.images.map((_, i) =>
-                propertyImageAlt(property.title, property.location.city, i)
+                propertyImageAlt(property.title, formatPropertyLocation(property.location), i)
               )}
             />
           </div>

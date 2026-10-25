@@ -165,8 +165,8 @@ export const getPropertyFacets = cache(async (): Promise<PropertyFacets> => {
     const properties = await publishedRecords<Property>("properties");
     const uniq = <T,>(xs: T[]) => [...new Set(xs)];
     return {
-      cities: uniq(properties.map((p) => p.location.city)).sort((a, b) => a.localeCompare(b)),
-      states: uniq(properties.map((p) => p.location.state)).sort((a, b) => a.localeCompare(b)),
+      cities: uniq(properties.map((p) => p.location.city).filter(Boolean)).sort((a, b) => a.localeCompare(b)),
+      states: uniq(properties.map((p) => p.location.state).filter(Boolean)).sort((a, b) => a.localeCompare(b)),
       types: uniq(properties.map((p) => p.type)),
       statuses: uniq(properties.map((p) => p.status)),
     };

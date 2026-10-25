@@ -4,7 +4,8 @@ Production-style public frontend for Sekibat Nig Limited, a Nigerian property co
 develops and owns property and provides property services to external clients.
 
 The site includes a protected CMS at `/admin` for editing and publishing website content.
-Its initial records and photography are placeholders. Public pages read published content
+Its initial property and project records describe Wemabod Housing Estate. Photography is still pending;
+see `docs/WEMABOD_CONTENT.md`. Public pages read published content
 through an asynchronous repository layer, which also supports the Sekibat Admin API adapter.
 
 ## Stack
@@ -65,7 +66,7 @@ pnpm shot -- / screenshots/home.png 1440 900
 
 ## Architecture
 
-- `data/` contains the initial placeholder records used to seed the CMS.
+- `data/` contains Wemabod property and project records and sample editorial content used to seed the CMS.
 - `lib/api/cms-store.ts` persists drafts and published records; `lib/cms/` validates edits and protects access.
 - `components/admin/` contains the responsive content workspace and editors.
 - `lib/api/` is the data seam used by pages and components. UI code must not import `data/`

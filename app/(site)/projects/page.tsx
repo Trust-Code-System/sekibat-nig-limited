@@ -10,7 +10,7 @@ import { buildMetadata } from "@/lib/seo";
 export const metadata: Metadata = buildMetadata({
   title: "Projects",
   description:
-    "Developments Sekibat has delivered on its own account and on behalf of clients: development, sales, maintenance, estate and project management.",
+    "Explore Sekibat’s developments, including Wemabod Housing Estate and its homes and land.",
   path: "/projects",
 });
 
@@ -23,10 +23,10 @@ export default async function ProjectsPage() {
         eyebrow="Projects"
         title={
           <>
-            What we have <span className="accent-serif">built.</span>
+            Explore our <span className="accent-serif">projects.</span>
           </>
         }
-        intro="A record of work delivered on our own account and for clients, across all five service lines. Ongoing projects are shown alongside completed ones."
+        intro="Discover Wemabod Housing Estate and explore the homes and land within the development."
       />
 
       <Container className="pb-20 md:pb-28">
@@ -46,7 +46,7 @@ export default async function ProjectsPage() {
             Something you need <span className="accent-serif">built?</span>
           </>
         }
-        body="We take on development, delivery, sales and management instructions for owners across Lagos and Abuja. Tell us what stage you are at."
+        body="We take on development, delivery, sales and management instructions for owners across Lagos, Abuja and Ekiti. Tell us what stage you are at."
         primary={{ href: "/contact", label: "Start an enquiry" }}
         secondary={{ href: "/services", label: "See our services" }}
       />
