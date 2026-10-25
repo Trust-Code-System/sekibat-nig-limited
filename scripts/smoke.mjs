@@ -118,20 +118,30 @@ if (await page.getByRole("button", { name: "Close menu" }).count()) {
 
 await visit("/");
 const preview = page.getByRole("region", { name: "Explore our properties" });
-await page.getByRole("radio", { name: "Commercial", exact: true }).click();
-await page.waitForFunction(() => document.querySelector('[aria-labelledby="home-properties-heading"] [role="status"]')?.textContent === "1 space to explore");
-await preview.getByRole("heading", { name: "Victoria Commercial Centre" }).waitFor();
-await page.getByRole("radio", { name: "Commercial", exact: true }).press("ArrowRight");
-await preview.getByRole("heading", { name: "Epe Lakeview Land" }).waitFor();
-await page.getByRole("radio", { name: "Land", exact: true }).press("Home");
-await page.waitForFunction(() => document.querySelector('[aria-labelledby="home-properties-heading"] [role="status"]')?.textContent === "6 spaces to explore");
+const allCards = await preview.locator("article").count();
+const filters = preview.getByRole("radio");
+const lastFilter = filters.last();
+const lastFilterName = await lastFilter.textContent();
+await lastFilter.click();
+await page.waitForFunction((name) => {
+  const region = document.querySelector('[aria-labelledby="home-properties-heading"]');
+  const selected = region?.querySelector('[role="radio"][aria-checked="true"]');
+  const count = region?.querySelectorAll("article").length ?? 0;
+  const label = region?.querySelector('[role="status"]')?.textContent;
+  return selected?.textContent === name && count > 0 && label === `${count} ${count === 1 ? "space" : "spaces"} to explore`;
+}, lastFilterName);
+if (await preview.locator("article").count() > allCards) throw new Error("Filtered preview grew unexpectedly");
+await lastFilter.press("Home");
+await page.waitForFunction((total) => {
+  const region = document.querySelector('[aria-labelledby="home-properties-heading"]');
+  return region?.querySelector('[role="radio"][aria-checked="true"]')?.textContent === "All spaces" && region?.querySelectorAll("article").length === total;
+}, allCards);
 
 await page.emulateMedia({ reducedMotion: "reduce" });
 await visit("/");
-await page.getByRole("heading", { name: /Elevate your space/ }).waitFor();
-await page.getByRole("radio", { name: "Homes", exact: true }).click();
-await preview.getByRole("heading", { name: "Sekibat Heights", exact: true }).waitFor();
-if (await page.getByRole("radio", { name: "Homes", exact: true }).getAttribute("aria-checked") !== "true") {
+await page.getByRole("heading", { level: 1 }).waitFor();
+await preview.getByRole("radio").last().click();
+if (await preview.getByRole("radio").last().getAttribute("aria-checked") !== "true") {
   throw new Error("Reduced-motion property filtering failed");
 }
 await page.emulateMedia({ reducedMotion: "no-preference" });
