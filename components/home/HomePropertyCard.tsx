@@ -21,7 +21,7 @@ export function HomePropertyCard({
   const size = formatSize(property.size, property.sizeUnit ?? "sqm");
 
   return (
-    <article className="group h-full">
+    <article className="cine-card group h-full">
       <Link
         href={`/properties/${property.slug}`}
         className="flex h-full flex-col rounded-2xl bg-white p-3 shadow-[0_1px_2px_rgba(12,14,10,0.05),0_12px_32px_-16px_rgba(12,14,10,0.18)] transition-shadow duration-300 hover:shadow-[0_2px_4px_rgba(12,14,10,0.06),0_20px_44px_-16px_rgba(12,14,10,0.24)]"

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import { BLUR_DATA_URL, RATIO, SIZES } from "@/lib/images";
@@ -26,6 +27,7 @@ export function PropertyGallery({
   alt: string[];
 }) {
   const [index, setIndex] = useState(0);
+  const reduced = useReducedMotion();
   const [dialogOpen, setDialogOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -89,6 +91,10 @@ export function PropertyGallery({
           RATIO.gallery
         )}
       >
+        <AnimatePresence initial={false}>
+        <motion.div key={images[index]} className="absolute inset-0"
+          initial={{ opacity: 0, scale: reduced ? 1 : 1.025 }} animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }} transition={{ duration: reduced ? 0 : 0.32 }}>
         <Image
           src={images[index]}
           alt={alt[index] ?? title}
@@ -100,12 +106,15 @@ export function PropertyGallery({
           blurDataURL={BLUR_DATA_URL}
           className="object-cover transition-transform duration-700 ease-(--ease-editorial) group-hover:scale-[1.02]"
         />
+        </motion.div>
+        </AnimatePresence>
         <span className="absolute right-4 bottom-4 rounded-full bg-onyx/80 px-3 py-2 text-2xs tracking-[0.14em] text-ivory uppercase backdrop-blur-sm">
           Enlarge
         </span>
       </button>
 
       {count > 1 && (
+        <LayoutGroup>
         <ul className="mt-3 flex flex-wrap gap-3" role="list">
           {images.map((src, i) => (
             <li key={src}>
@@ -127,12 +136,14 @@ export function PropertyGallery({
                   className="object-cover"
                 />
                 {i === index && (
-                  <span aria-hidden className="absolute inset-x-0 bottom-0 h-0.5 bg-lime" />
+                  <motion.span aria-hidden layoutId="gallery-selection" className="absolute inset-0 rounded-xl border-2 border-lime"
+                    transition={{ type: "spring", duration: reduced ? 0 : 0.3, bounce: 0.1 }} />
                 )}
               </button>
             </li>
           ))}
         </ul>
+        </LayoutGroup>
       )}
 
       <dialog
@@ -156,6 +167,9 @@ export function PropertyGallery({
 
           <div className="relative flex-1">
             {dialogOpen && (
+              <motion.div key={images[index]} className="absolute inset-0"
+                initial={{ opacity: reduced ? 1 : 0, y: reduced ? 0 : 8 }}
+                animate={{ opacity: 1, y: 0 }} transition={{ duration: reduced ? 0 : 0.25 }}>
               <Image
                 src={images[index]}
                 alt={alt[index] ?? title}
@@ -163,6 +177,7 @@ export function PropertyGallery({
                 sizes="100vw"
                 className="object-contain"
               />
+              </motion.div>
             )}
           </div>
 
