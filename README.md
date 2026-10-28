@@ -22,6 +22,12 @@ versions.
 
 ## Local development
 
+CI checks and the Vercel deployment approach are documented in [docs/CI_CD.md](docs/CI_CD.md).
+
+The Express backend scaffold lives in [`backend/`](backend/README.md). Run it separately with
+`pnpm --filter @sekibat/backend dev` (port 4000). It currently provides a health endpoint;
+the website's CMS has not been migrated to it.
+
 ```bash
 pnpm install
 pnpm dev

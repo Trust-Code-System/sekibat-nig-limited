@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint, tests and builds
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      # Disposable CI database only; never use production credentials here.
+      DATABASE_URL: postgresql://sekibat:ci-only-password@127.0.0.1:5432/sekibat_ci
+      LOG_LEVEL: silent
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: sekibat
+          POSTGRES_PASSWORD: ci-only-password
+          POSTGRES_DB: sekibat_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U sekibat -d sekibat_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@7088e561eb65bb68695d245aa206f005ef30921d # v4.1.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: pnpm
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Lint workspace
+        run: pnpm lint --max-warnings 0
+      - name: Build backend
+        run: pnpm --filter @sekibat/backend build
+      - name: Apply migrations to disposable database
+        run: pnpm --filter @sekibat/backend db:migrate
+      - name: Verify database connection
+        run: pnpm --filter @sekibat/backend db:check
+      - name: Test backend
+        run: pnpm --filter @sekibat/backend test
+      - name: Build and typecheck website
+        run: pnpm build
