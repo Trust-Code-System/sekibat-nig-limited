@@ -1,0 +1,42 @@
+{
+  "name": "@sekibat/backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "tsx watch src/local.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/local.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "lint": "eslint src tests scripts",
+    "db:generate": "drizzle-kit generate --config src/config/drizzle.ts",
+    "db:migrate": "drizzle-kit migrate --config src/config/drizzle.ts",
+    "db:check": "tsx scripts/check-db.ts",
+    "db:up": "docker compose --env-file .env -f compose.yaml up -d --wait",
+    "db:down": "docker compose --env-file .env -f compose.yaml down",
+    "db:logs": "docker compose --env-file .env -f compose.yaml logs --tail 100 -f postgres",
+    "db:studio": "drizzle-kit studio --config src/config/drizzle.ts"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.4",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "pg": "^8.23.1",
+    "pino": "^10.4.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.23.1",
+    "@types/supertest": "^6.0.0",
+    "drizzle-kit": "^0.31.11",
+    "supertest": "^7.1.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.3"
+  }
+}
