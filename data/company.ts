@@ -43,10 +43,10 @@ export const company: Company = {
   ],
 
   contact: {
-    // Phone and email supplied on the Wemabod brochure; office address still pending.
-    addressLines: ["Office address available on enquiry", "Nigeria"],
+    // Confirmed company contact details.
+    addressLines: ["44 Hakeem Balogun Street, CBD, Agidingbi, Ikeja Lagos"],
     phone: "+234 803 402 1426",
-    email: "nsekibat@gmail.com",
+    email: "info@sekibat-nig-limited.com",
     hours: "Monday to Friday, 9:00 – 17:00 WAT",
     isPlaceholder: false,
   },

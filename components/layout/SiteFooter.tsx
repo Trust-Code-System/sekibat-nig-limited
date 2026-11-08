@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { BrandLockup } from "@/components/brand/BrandLockup";
 import { getCompany, getServices } from "@/lib/api";
-import { NAV, SITE } from "@/lib/site";
+import { NAV } from "@/lib/site";
 import { CineAction } from "@/components/ui/CineAction";
 import { Container, Rule } from "@/components/ui/primitives";
 
@@ -136,7 +136,7 @@ export async function SiteFooter() {
           <p>
             &copy; {year} {company.legalName}
           </p>
-          <p className="font-mono">{SITE.url.replace(/^https?:\/\//, "")}</p>
+          <p className="font-mono">Developed by Trustcode Systems</p>
         </div>
       </Container>
     </footer>
